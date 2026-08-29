@@ -1,12 +1,16 @@
-# Witr GUI 🖥️⚡
+<p align="center">
+  <img src="docs/images/app-icon.png" alt="Witr GUI Icon" width="128" height="128">
+</p>
+
+<h1 align="center">Witr GUI 🖥️⚡</h1>
 
 <p align="center">
-  <img src="docs/images/screenshot-workbench-v3.png" alt="Witr GUI Visual Workbench" width="100%">
+  <strong>现代化可视化全链路进程因果血缘追溯与智能端口排障工作台</strong><br>
+  Powered by <a href="https://github.com/pranshuparmar/witr">witr</a> (<em>"Why is this running?"</em>)
 </p>
 
 <p align="center">
-  <strong>现代化可视化全链路进程因果血缘追溯与端口排障工作台</strong><br>
-  Powered by <a href="https://github.com/pranshuparmar/witr">witr</a> (<em>"Why is this running?"</em>)
+  <img src="docs/images/screenshot-workbench-v3.png" alt="Witr GUI Visual Workbench" width="100%">
 </p>
 
 <p align="center">

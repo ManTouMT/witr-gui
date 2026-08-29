@@ -1,12 +1,16 @@
-# Witr GUI 🖥️⚡
-
 <p align="center">
-  <img src="docs/images/screenshot-workbench-v3.png" alt="Witr GUI Visual Workbench" width="100%">
+  <img src="docs/images/app-icon.png" alt="Witr GUI Icon" width="128" height="128">
 </p>
+
+<h1 align="center">Witr GUI 🖥️⚡</h1>
 
 <p align="center">
   <strong>Visual Causal Process & Port Inspector</strong><br>
   Powered by <a href="https://github.com/pranshuparmar/witr">witr</a> (<em>"Why is this running?"</em>)
+</p>
+
+<p align="center">
+  <img src="docs/images/screenshot-workbench-v3.png" alt="Witr GUI Visual Workbench" width="100%">
 </p>
 
 <p align="center">

@@ -1,7 +1,8 @@
-<h1 align="center">
-  <img src="docs/images/app-icon-v2.png" alt="Witr GUI Icon" width="38" height="38" style="vertical-align: middle; margin-right: 6px;">
-  Witr GUI 🖥️⚡
-</h1>
+<p align="center">
+  <img src="docs/images/app-icon-v2.png" alt="Witr GUI Icon" width="128" height="128">
+</p>
+
+<h1 align="center">Witr GUI 🖥️⚡</h1>
 
 <p align="center">
   <strong>Visual Causal Process & Port Inspector</strong><br>
@@ -31,24 +32,6 @@
 `witr-gui` is a modern desktop system inspector built for macOS and developers.
 
 Say goodbye to cryptic `lsof -i :3000`, `netstat`, and blind `kill -9` commands. `witr-gui` transforms black-box processes and ports into an intuitive **bidirectional causal family tree**, **interactive topology graph**, and **deep diagnostic workbench**, answering in 1 second: **"Who is occupying this port? How was it started? What are its parents and spawned children? Can I safely terminate it?"**
-
----
-
-## 📥 Direct Download & Installation (End Users)
-
-> 💡 **No compilation required**. Download pre-compiled, fully self-contained packages:
-
-| Architecture | Installer Format | Download Link |
-| :--- | :--- | :--- |
-| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **DMG Installer (Recommended)** | [**`Witr.GUI-0.1.1-arm64.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64.dmg) |
-| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **Portable Zip** | [**`Witr.GUI-0.1.1-arm64-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64-mac.zip) |
-| 🖥️ **Intel Mac (x64)** | **DMG Installer** | [**`Witr.GUI-0.1.1.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1.dmg) |
-| 🖥️ **Intel Mac (x64)** | **Portable Zip** | [**`Witr.GUI-0.1.1-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-mac.zip) |
-
-> [!TIP]
-> **Bundled Binary**: `witr-gui` embeds a pre-built standalone `witr` binary. You do not need to install Go, Python, Node.js, or Homebrew.
->
-> **macOS Security Gatekeeper Tip**: If macOS reports *"cannot be opened because it is from an unidentified developer"*, open **System Settings $\to$ Privacy & Security** and click **"Open Anyway"** (or right-click the app in Finder and select **Open**).
 
 ---
 
@@ -105,6 +88,24 @@ Say goodbye to cryptic `lsof -i :3000`, `netstat`, and blind `kill -9` commands.
 * **Double-Column Environment Variables**: Fixed-width keys ensure strict horizontal value alignment with 1-click copy.
 * **Network Sockets Grid**: Protocol placed first, with fixed-width port and status badges (`LISTEN`, `ESTABLISHED`, `CLOSE_WAIT`).
 * **120Hz Zero-Lag Resizing**: Driven by CSS custom properties and `requestAnimationFrame` for buttery-smooth split-pane adjustments.
+
+---
+
+## 📥 Direct Download & Installation (End Users)
+
+> 💡 **No compilation required**. Download pre-compiled, fully self-contained packages:
+
+| Architecture | Installer Format | Download Link |
+| :--- | :--- | :--- |
+| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **DMG Installer (Recommended)** | [**`Witr.GUI-0.1.1-arm64.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64.dmg) |
+| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **Portable Zip** | [**`Witr.GUI-0.1.1-arm64-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64-mac.zip) |
+| 🖥️ **Intel Mac (x64)** | **DMG Installer** | [**`Witr.GUI-0.1.1.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1.dmg) |
+| 🖥️ **Intel Mac (x64)** | **Portable Zip** | [**`Witr.GUI-0.1.1-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-mac.zip) |
+
+> [!TIP]
+> **Bundled Binary**: `witr-gui` embeds a pre-built standalone `witr` binary. You do not need to install Go, Python, Node.js, or Homebrew.
+>
+> **macOS Security Gatekeeper Tip**: If macOS reports *"cannot be opened because it is from an unidentified developer"*, open **System Settings $\to$ Privacy & Security** and click **"Open Anyway"** (or right-click the app in Finder and select **Open**).
 
 ---
 

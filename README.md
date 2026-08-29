@@ -1,7 +1,8 @@
-<h1 align="center">
-  <img src="docs/images/app-icon-v2.png" alt="Witr GUI Icon" width="38" height="38" style="vertical-align: middle; margin-right: 6px;">
-  Witr GUI 🖥️⚡
-</h1>
+<p align="center">
+  <img src="docs/images/app-icon-v2.png" alt="Witr GUI Icon" width="128" height="128">
+</p>
+
+<h1 align="center">Witr GUI 🖥️⚡</h1>
 
 <p align="center">
   <strong>现代化可视化全链路进程因果血缘追溯与智能端口排障工作台</strong><br>
@@ -31,24 +32,6 @@
 `witr-gui` 是专为 macOS 和现代化开发者打造的**系统级进程因果追溯与智能端口排障工作台**。
 
 告别晦涩的 `lsof -i :3000`、`netstat` 和漫无目的的 `kill -9`。`witr-gui` 将进程与端口的黑盒状态转化为直观的**双向因果家族树**、**交互式拓扑图**与**全景运行详情**，帮助你在 1 秒内回答：**“这个端口被谁占用了？它是怎么启动的？它的父进程与衍生子进程都是谁？我能不能安全释放它？”**
-
----
-
-## 📥 客户端直接下载与安装（终端用户）
-
-> 💡 **无需手动配置环境或从源码构建**，直接下载对应架构的安装包即可开箱即用：
-
-| 硬件架构 | 安装包格式 | 一键下载链接 |
-| :--- | :--- | :--- |
-| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **DMG 安装镜像 (推荐)** | [**`Witr.GUI-0.1.1-arm64.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64.dmg) |
-| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **绿色免安装 Zip** | [**`Witr.GUI-0.1.1-arm64-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64-mac.zip) |
-| 🖥️ **Intel Mac (x64)** | **DMG 安装镜像** | [**`Witr.GUI-0.1.1.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1.dmg) |
-| 🖥️ **Intel Mac (x64)** | **绿色免安装 Zip** | [**`Witr.GUI-0.1.1-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-mac.zip) |
-
-> [!TIP]
-> **内置完整引擎**：`witr-gui` 已经内置了完全自包含的 `witr` 高性能底层二进制文件，无需预先安装 Homebrew、Go、Python 或 Node.js。
->
-> **macOS 首次打开安全提示**：如遇到 macOS 提示 *“无法打开，因为无法验证开发者”*，只需前往 **系统设置 $\to$ 隐私与安全性** 点击 **“仍要打开”**（或在访达中按住 Control 键右键点击应用图标选择 **打开**）即可。
 
 ---
 
@@ -114,6 +97,24 @@
   - `[协议]` 置顶第一列，`[端口]` 与 `[状态]`（`LISTEN` / `ESTABLISHED` / `CLOSE_WAIT`）绝对固定宽度严丝合缝对齐。
 * **120Hz 丝滑拖拽缩放**：
   - 底层基于 CSS 变量与 `requestAnimationFrame` 驱动，拖拽侧边栏与底部面板完全零 React 渲染开销，操作流畅如丝。
+
+---
+
+## 📥 客户端直接下载与安装（终端用户）
+
+> 💡 **无需手动配置环境或从源码构建**，直接下载对应架构的安装包即可开箱即用：
+
+| 硬件架构 | 安装包格式 | 一键下载链接 |
+| :--- | :--- | :--- |
+| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **DMG 安装镜像 (推荐)** | [**`Witr.GUI-0.1.1-arm64.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64.dmg) |
+| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **绿色免安装 Zip** | [**`Witr.GUI-0.1.1-arm64-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64-mac.zip) |
+| 🖥️ **Intel Mac (x64)** | **DMG 安装镜像** | [**`Witr.GUI-0.1.1.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1.dmg) |
+| 🖥️ **Intel Mac (x64)** | **绿色免安装 Zip** | [**`Witr.GUI-0.1.1-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-mac.zip) |
+
+> [!TIP]
+> **内置完整引擎**：`witr-gui` 已经内置了完全自包含的 `witr` 高性能底层二进制文件，无需预先安装 Homebrew、Go、Python 或 Node.js。
+>
+> **macOS 首次打开安全提示**：如遇到 macOS 提示 *“无法打开，因为无法验证开发者”*，只需前往 **系统设置 $\to$ 隐私与安全性** 点击 **“仍要打开”**（或在访达中按住 Control 键右键点击应用图标选择 **打开**）即可。
 
 ---
 

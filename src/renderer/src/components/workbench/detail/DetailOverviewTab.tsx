@@ -12,9 +12,9 @@ export const DetailOverviewTab: React.FC = () => {
   const serviceName = witrResult?.Source?.Name || ''
 
   return (
-    <div className="grid grid-cols-3 gap-4 text-xs">
+    <div className="grid grid-cols-3 gap-3.5 text-xs select-none">
       {/* Meta Grid Card 1: 运行生命周期 */}
-      <div className="p-3.5 rounded-xl bg-neutral-900/60 border border-neutral-800 space-y-2.5">
+      <div className="p-3.5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] hover:border-white/[0.12] transition-all space-y-2.5 backdrop-blur-md">
         <span className="font-semibold text-neutral-300 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
           <Clock className="w-3.5 h-3.5 text-blue-400" />
           运行生命周期
@@ -38,7 +38,7 @@ export const DetailOverviewTab: React.FC = () => {
       </div>
 
       {/* Meta Grid Card 2: 守护源与服务 */}
-      <div className="p-3.5 rounded-xl bg-neutral-900/60 border border-neutral-800 space-y-2.5">
+      <div className="p-3.5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] hover:border-white/[0.12] transition-all space-y-2.5 backdrop-blur-md">
         <span className="font-semibold text-neutral-300 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
           <Server className="w-3.5 h-3.5 text-purple-400" />
           守护源与服务
@@ -62,7 +62,7 @@ export const DetailOverviewTab: React.FC = () => {
                 <button
                   onClick={() => copyWithFeedback('service', serviceName)}
                   title="复制完整服务名"
-                  className="p-1 rounded text-neutral-500 hover:text-neutral-200 hover:bg-neutral-800 transition shrink-0"
+                  className="p-1 rounded text-neutral-500 hover:text-neutral-200 hover:bg-white/[0.08] transition shrink-0 cursor-pointer active:scale-90"
                 >
                   {isCopied('service') ? (
                     <Check className="w-3 h-3 text-emerald-400" />
@@ -84,7 +84,7 @@ export const DetailOverviewTab: React.FC = () => {
       </div>
 
       {/* Meta Grid Card 3: 代码仓库与路径 */}
-      <div className="p-3.5 rounded-xl bg-neutral-900/60 border border-neutral-800 space-y-2.5">
+      <div className="p-3.5 rounded-2xl bg-neutral-900/40 border border-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] hover:border-white/[0.12] transition-all space-y-2.5 backdrop-blur-md">
         <span className="font-semibold text-neutral-300 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
           <GitBranch className="w-3.5 h-3.5 text-emerald-400" />
           代码仓库与路径
@@ -100,28 +100,20 @@ export const DetailOverviewTab: React.FC = () => {
               <span className="text-neutral-500">工作目录:</span>
               {workingDir && workingDir !== 'unknown' && (
                 <button
-                  onClick={() => copyWithFeedback('dir', workingDir)}
-                  title="复制工作目录"
-                  className="flex items-center gap-1 text-[10px] text-neutral-400 hover:text-neutral-200 transition"
+                  onClick={() => copyWithFeedback('cwd-detail', workingDir)}
+                  className="text-[10px] text-neutral-500 hover:text-neutral-200 flex items-center gap-1 transition cursor-pointer active:scale-90"
                 >
-                  {isCopied('dir') ? (
-                    <span className="text-emerald-400 flex items-center gap-0.5">
-                      <Check className="w-3 h-3" /> 已复制
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-0.5">
-                      <Copy className="w-3 h-3" /> 复制
-                    </span>
-                  )}
+                  {isCopied('cwd-detail') ? <Check className="w-2.5 h-2.5 text-emerald-400" /> : <Copy className="w-2.5 h-2.5" />}
+                  <span>{isCopied('cwd-detail') ? '已复制' : '复制'}</span>
                 </button>
               )}
             </div>
-            <span
-              className="text-neutral-200 truncate block select-text font-mono text-[10px] bg-neutral-950/70 p-1.5 rounded border border-neutral-800"
+            <div
+              className="p-2 rounded-xl bg-black/60 border border-white/[0.06] text-neutral-300 font-mono truncate text-[10px] select-text shadow-inner font-medium"
               title={workingDir}
             >
               {workingDir || 'unknown'}
-            </span>
+            </div>
           </div>
         </div>
       </div>

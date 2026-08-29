@@ -44,19 +44,19 @@ const HighlightedJson: React.FC<{ json: any }> = ({ json }) => {
         )
       } else if (matchedText === 'true' || matchedText === 'false') {
         parts.push(
-          <span key={matchStart} className="text-purple-400 font-bold">
+          <span key={matchStart} className="text-amber-400 font-bold">
             {matchedText}
           </span>
         )
       } else if (matchedText === 'null') {
         parts.push(
-          <span key={matchStart} className="text-rose-400 italic">
+          <span key={matchStart} className="text-neutral-500 italic font-bold">
             {matchedText}
           </span>
         )
       } else {
         parts.push(
-          <span key={matchStart} className="text-amber-300 font-mono">
+          <span key={matchStart} className="text-purple-300 font-bold">
             {matchedText}
           </span>
         )
@@ -72,21 +72,17 @@ const HighlightedJson: React.FC<{ json: any }> = ({ json }) => {
     return parts
   }
 
-  if (formattedLines.length === 0) {
-    return <span className="text-neutral-500">无数据</span>
-  }
-
   return (
-    <div className="font-mono text-[11px] leading-relaxed select-text space-y-0.5">
+    <pre className="font-mono text-[11px] leading-relaxed text-neutral-300 select-text">
       {formattedLines.map((line, idx) => (
-        <div key={idx} className="flex hover:bg-neutral-900/60 rounded px-1">
-          <span className="w-8 select-none text-neutral-600 text-right pr-3 shrink-0 font-mono text-[10px]">
+        <div key={idx} className="hover:bg-white/[0.04] px-1 rounded transition-colors duration-75">
+          <span className="inline-block w-8 text-neutral-600 select-none text-right pr-3 font-mono text-[10px]">
             {idx + 1}
           </span>
-          <span className="text-neutral-300 whitespace-pre">{highlightLine(line)}</span>
+          {highlightLine(line)}
         </div>
       ))}
-    </div>
+    </pre>
   )
 }
 
@@ -95,20 +91,20 @@ export const DetailRawJsonTab: React.FC = () => {
   const { copyWithFeedback, isCopied } = useCopyFeedback()
 
   return (
-    <div className="relative rounded-xl bg-neutral-900/90 border border-neutral-800 overflow-hidden shadow-inner">
-      <div className="flex items-center justify-between px-3 py-1.5 bg-neutral-950/80 border-b border-neutral-800/80 text-xs">
+    <div className="relative rounded-2xl bg-black/60 border border-white/[0.06] overflow-hidden shadow-inner backdrop-blur-md select-none">
+      <div className="flex items-center justify-between px-3.5 py-2 bg-neutral-950/80 border-b border-white/[0.06] text-xs">
         <span className="font-mono text-neutral-400 text-[11px] flex items-center gap-1.5">
           <Code className="w-3.5 h-3.5 text-sky-400" />
           witr Process &amp; Ancestry JSON Payload
         </span>
         <button
           onClick={() => copyWithFeedback('rawJson', JSON.stringify(witrResult, null, 2))}
-          className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-mono flex items-center gap-1.5 transition cursor-pointer"
+          className="px-2.5 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-neutral-200 text-xs font-mono flex items-center gap-1.5 transition cursor-pointer active:scale-95 border border-white/[0.04]"
         >
           {isCopied('rawJson') ? (
             <>
               <Check className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-emerald-400">已复制</span>
+              <span className="text-emerald-400 font-medium">已复制</span>
             </>
           ) : (
             <>

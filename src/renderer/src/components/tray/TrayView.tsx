@@ -8,7 +8,8 @@ import {
   Layers,
   FolderOpen,
   AlertTriangle,
-  PowerOff
+  PowerOff,
+  X
 } from 'lucide-react'
 
 export const TrayView: React.FC = () => {
@@ -63,43 +64,43 @@ export const TrayView: React.FC = () => {
   const isProtected = selectedPort?.isSystem
 
   return (
-    <div className="w-[420px] h-[560px] flex flex-col bg-neutral-950/95 border border-neutral-800/80 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl text-neutral-100 select-none">
+    <div className="w-[420px] h-[560px] flex flex-col bg-[#0c0c10]/95 border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-2xl text-neutral-100 select-none">
       {/* Top Header */}
-      <div className="flex items-center justify-between px-4 pt-3.5 pb-2.5 border-b border-neutral-800/60 bg-neutral-900/50">
+      <div className="flex items-center justify-between px-4 pt-3.5 pb-2.5 border-b border-white/[0.06] bg-neutral-950/60">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-md bg-blue-600 flex items-center justify-center font-bold text-[11px] text-white shadow-sm shadow-blue-500/30">
+          <div className="w-5 h-5 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-[11px] text-white shadow-md shadow-blue-500/25 border border-white/20">
             W
           </div>
           <span className="font-semibold text-sm tracking-tight text-neutral-200">
             Witr Quick Inspector
           </span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-neutral-800 text-neutral-400 font-mono">
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/[0.06] text-neutral-400 font-mono border border-white/[0.04]">
             {ports.length} ports
           </span>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => fetchPorts(true)}
             disabled={loadingPorts}
             title="刷新端口列表"
-            className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/60 transition"
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-100 hover:bg-white/[0.08] transition active:scale-90 cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loadingPorts ? 'animate-spin text-blue-400' : ''}`} />
           </button>
           <button
             onClick={handleOpenWorkbench}
             title="打开全景工作台 (Full Workbench)"
-            className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium text-blue-400 hover:text-blue-300 hover:bg-blue-950/50 transition border border-blue-900/40"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-blue-300 hover:text-white bg-blue-950/60 hover:bg-blue-900/80 transition border border-blue-500/30 cursor-pointer active:scale-95 shadow-sm"
           >
-            <Maximize2 className="w-3.5 h-3.5" />
+            <Maximize2 className="w-3.5 h-3.5 text-blue-400" />
             <span>工作台</span>
           </button>
         </div>
       </div>
 
       {/* Search Input Bar */}
-      <div className="p-2.5 border-b border-neutral-800/40 bg-neutral-900/20">
+      <div className="p-2.5 border-b border-white/[0.06] bg-black/40">
         <div className="relative flex items-center">
           <Search className="w-3.5 h-3.5 absolute left-2.5 text-neutral-500" />
           <input
@@ -107,15 +108,23 @@ export const TrayView: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="搜索端口号 / 进程名 / PID..."
-            className="w-full pl-8 pr-3 py-1.5 bg-neutral-900/80 border border-neutral-800 rounded-lg text-xs text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/40 transition"
+            className="w-full pl-8 pr-7 py-1.5 bg-black/50 border border-white/[0.08] rounded-lg text-xs text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-blue-500/60 font-mono shadow-inner transition"
           />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2 p-0.5 text-neutral-500 hover:text-neutral-200 transition cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
       {/* Main Content: Split Port List & Active Preview */}
       <div className="flex-1 flex flex-col min-h-0">
         {/* Port Chips Scroll Area */}
-        <div className="p-2.5 max-h-[190px] overflow-y-auto grid grid-cols-2 gap-1.5 border-b border-neutral-800/50">
+        <div className="p-2.5 max-h-[190px] overflow-y-auto grid grid-cols-2 gap-1.5 border-b border-white/[0.06]">
           {filteredPorts.length === 0 ? (
             <div className="col-span-2 py-6 text-center text-xs text-neutral-500">
               {loadingPorts ? '正在扫描活动端口...' : '无匹配活动端口'}
@@ -129,23 +138,23 @@ export const TrayView: React.FC = () => {
                 <button
                   key={`${item.port}-${item.pid}`}
                   onClick={() => selectPort(item)}
-                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-left transition border ${
+                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-left transition border cursor-pointer ${
                     isSelected
-                      ? 'bg-blue-600/15 border-blue-500/60 text-blue-200 shadow-sm'
-                      : 'bg-neutral-900/40 border-neutral-800/60 hover:bg-neutral-800/50 text-neutral-300'
+                      ? 'bg-gradient-to-r from-blue-950/60 via-blue-900/30 to-neutral-900/60 border-blue-500/60 text-blue-100 shadow-md shadow-blue-950/40'
+                      : 'bg-neutral-900/40 border-white/[0.04] hover:bg-neutral-900/80 hover:border-white/[0.1] text-neutral-300'
                   }`}
                 >
                   <div className="flex items-center gap-1.5 min-w-0">
                     <span
-                      className={`font-mono text-xs font-semibold px-1 py-0.5 rounded ${
+                      className={`font-mono text-xs font-semibold px-1.5 py-0.5 rounded-md ${
                         isDev
-                          ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/50'
-                          : 'bg-neutral-800 text-neutral-300'
+                          ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
+                          : 'bg-neutral-850 text-neutral-300 border border-white/[0.06]'
                       }`}
                     >
                       :{item.port}
                     </span>
-                    <span className="text-xs truncate max-w-[90px] font-medium">
+                    <span className="text-xs truncate max-w-[90px] font-medium text-neutral-200">
                       {item.processName}
                     </span>
                   </div>
@@ -159,7 +168,7 @@ export const TrayView: React.FC = () => {
         </div>
 
         {/* Selected Port Inspection Card */}
-        <div className="flex-1 p-3 flex flex-col justify-between overflow-y-auto bg-neutral-900/30">
+        <div className="flex-1 p-3 flex flex-col justify-between overflow-y-auto bg-neutral-950/30">
           {selectedPort ? (
             <div className="space-y-3">
               {/* Header Badge & Title */}
@@ -169,7 +178,7 @@ export const TrayView: React.FC = () => {
                     <span className="text-base font-bold font-mono text-blue-400">
                       :{selectedPort.port}
                     </span>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-neutral-800 text-neutral-200 border border-neutral-700">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-neutral-850 text-neutral-200 border border-white/[0.08]">
                       {selectedPort.processName}
                     </span>
                     <span className="text-[11px] font-mono text-neutral-500">
@@ -182,39 +191,39 @@ export const TrayView: React.FC = () => {
                 </div>
 
                 {isProtected && (
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-amber-950/60 text-amber-300 border border-amber-800/40 flex items-center gap-1">
-                    <AlertTriangle className="w-3 h-3" />
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-950/60 text-amber-300 border border-amber-500/40 flex items-center gap-1 font-medium">
+                    <AlertTriangle className="w-3 h-3 text-amber-400" />
                     系统关键
                   </span>
                 )}
               </div>
 
               {/* Ancestry Chain Snippet */}
-              <div className="p-2.5 rounded-lg bg-neutral-900/70 border border-neutral-800 text-xs">
-                <div className="flex items-center justify-between text-[11px] text-neutral-400 font-medium mb-1.5">
-                  <span className="flex items-center gap-1">
+              <div className="p-3 rounded-xl bg-neutral-900/40 border border-white/[0.06] text-xs shadow-inner backdrop-blur-md">
+                <div className="flex items-center justify-between text-[11px] text-neutral-400 font-medium mb-2">
+                  <span className="flex items-center gap-1 text-neutral-300">
                     <Layers className="w-3.5 h-3.5 text-blue-400" />
                     因果血缘链路 (Why is this running?)
                   </span>
-                  {inspecting && <span className="text-[10px] text-blue-400 animate-pulse">解析中...</span>}
+                  {inspecting && <span className="text-[10px] text-blue-400 animate-pulse font-mono">解析中...</span>}
                 </div>
 
                 {ancestry.length > 0 ? (
-                  <div className="flex flex-wrap items-center gap-1 font-mono text-[11px] text-neutral-300 pt-0.5">
+                  <div className="flex flex-wrap items-center gap-1.5 font-mono text-[11px] text-neutral-300 pt-0.5">
                     {ancestry.map((node, idx) => (
                       <React.Fragment key={node.PID}>
                         <span
-                          className={`px-1.5 py-0.5 rounded ${
+                          className={`px-1.5 py-0.5 rounded-md ${
                             idx === ancestry.length - 1
-                              ? 'bg-blue-600/20 text-blue-300 font-semibold border border-blue-500/40'
-                              : 'bg-neutral-800 text-neutral-400'
+                              ? 'bg-blue-950/80 text-blue-300 font-semibold border border-blue-500/40 shadow-sm'
+                              : 'bg-neutral-850 text-neutral-400 border border-white/[0.04]'
                           }`}
                           title={`PID: ${node.PID} | ${node.Cmdline || node.Command}`}
                         >
                           {node.Command}
                         </span>
                         {idx < ancestry.length - 1 && (
-                          <span className="text-neutral-600 font-bold">→</span>
+                          <span className="text-blue-500/60 font-bold">→</span>
                         )}
                       </React.Fragment>
                     ))}
@@ -227,13 +236,13 @@ export const TrayView: React.FC = () => {
 
                 {/* Working Directory Quick Link */}
                 {processInfo?.WorkingDir && processInfo.WorkingDir !== 'unknown' && (
-                  <div className="mt-2 pt-2 border-t border-neutral-800/60 flex items-center justify-between">
+                  <div className="mt-2.5 pt-2 border-t border-white/[0.04] flex items-center justify-between">
                     <span className="text-[10px] text-neutral-500 truncate max-w-[240px] font-mono">
                       {processInfo.WorkingDir}
                     </span>
                     <button
                       onClick={() => openPath(processInfo.WorkingDir!, 'finder')}
-                      className="text-[10px] text-blue-400 hover:text-blue-300 flex items-center gap-1"
+                      className="text-[10px] text-blue-400 hover:text-blue-300 flex items-center gap-1 font-medium cursor-pointer"
                     >
                       <FolderOpen className="w-3 h-3" />
                       Finder
@@ -251,9 +260,9 @@ export const TrayView: React.FC = () => {
 
           {/* Bottom Action Section */}
           {selectedPort && (
-            <div className="pt-2 border-t border-neutral-800/80">
+            <div className="pt-2.5 border-t border-white/[0.06]">
               {isProtected ? (
-                <div className="w-full py-1.5 px-3 rounded-lg bg-neutral-900 border border-neutral-800 text-center text-xs text-neutral-400">
+                <div className="w-full py-1.5 px-3 rounded-xl bg-neutral-900/60 border border-white/[0.06] text-center text-xs text-neutral-400">
                   受白名单保护：此为系统关键进程，不可释放
                 </div>
               ) : confirmKill ? (
@@ -261,20 +270,20 @@ export const TrayView: React.FC = () => {
                   <button
                     disabled={killing}
                     onClick={() => handleKill(false)}
-                    className="flex-1 py-1.5 px-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-neutral-950 font-medium text-xs transition"
+                    className="flex-1 py-1.5 px-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-neutral-950 font-medium text-xs transition cursor-pointer active:scale-95 shadow-md"
                   >
                     优雅退出 (SIGTERM)
                   </button>
                   <button
                     disabled={killing}
                     onClick={() => handleKill(true)}
-                    className="flex-1 py-1.5 px-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-medium text-xs transition"
+                    className="flex-1 py-1.5 px-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-medium text-xs transition cursor-pointer active:scale-95 shadow-md shadow-rose-900/40"
                   >
                     强制杀死 (-9)
                   </button>
                   <button
                     onClick={() => setConfirmKill(false)}
-                    className="py-1.5 px-2.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs"
+                    className="py-1.5 px-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-neutral-300 text-xs cursor-pointer active:scale-95"
                   >
                     取消
                   </button>
@@ -282,7 +291,7 @@ export const TrayView: React.FC = () => {
               ) : (
                 <button
                   onClick={() => setConfirmKill(true)}
-                  className="w-full py-1.5 px-3 rounded-lg bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-600/40 text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow-sm"
+                  className="w-full py-2 px-3 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-700/60 text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow-lg shadow-rose-950/50 cursor-pointer active:scale-95"
                 >
                   <PowerOff className="w-3.5 h-3.5" />
                   <span>一键释放端口 :{selectedPort.port}</span>

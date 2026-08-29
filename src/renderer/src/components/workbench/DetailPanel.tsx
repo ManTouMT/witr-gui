@@ -6,12 +6,12 @@ import { DetailEnvTab } from './detail/DetailEnvTab'
 import { DetailSocketsTab } from './detail/DetailSocketsTab'
 import { DetailRawJsonTab } from './detail/DetailRawJsonTab'
 import {
+  Info,
+  Key,
+  Network,
   Code,
   FolderOpen,
   PowerOff,
-  Info,
-  Network,
-  FileCode,
   ShieldAlert
 } from 'lucide-react'
 
@@ -20,144 +20,145 @@ export const DetailPanel: React.FC = () => {
     witrResult,
     selectedPort,
     selectedProcess,
-    detailSubTab,
-    setDetailSubTab,
+    appMode,
+    fetchPorts,
+    fetchProcesses,
     openPath,
-    killCurrentProcess
+    showToast
   } = useAppStore()
 
-  const [confirmKill, setConfirmKill] = useState(false)
-  const [killing, setKilling] = useState(false)
+  const [activeTab, setActiveTab] = useState<'overview' | 'env' | 'sockets' | 'json'>('overview')
 
   const processInfo = witrResult?.Process
-  const isProtected = selectedPort?.isSystem || selectedProcess?.isSystem
-  const workingDir = processInfo?.WorkingDir || ''
-  const isProjectDir = isCodeProject(processInfo?.Workspace, workingDir)
-  const isSandbox = processInfo?.Workspace?.projectType === 'app_sandbox' || workingDir.includes('/Library/Containers/')
+  const isSystemProcess = selectedPort?.isSystem || selectedProcess?.isSystem
 
   const handleKill = async (force: boolean) => {
-    setKilling(true)
-    await killCurrentProcess(force)
-    setKilling(false)
-    setConfirmKill(false)
+    const pid = processInfo?.PID || selectedPort?.pid || selectedProcess?.pid
+    const procName = processInfo?.Command || selectedPort?.processName || selectedProcess?.command
+    if (!pid) return
+
+    try {
+      const res = await window.api.killProcess({ pid, force, actionType: 'process' }, procName)
+      if (res.success) {
+        showToast(`已${force ? '强制终止' : '释放'} ${procName} (PID: ${pid})`, 'success')
+        if (appMode === 'ports') fetchPorts(true)
+        else fetchProcesses(true)
+      } else {
+        showToast(`终止失败: ${res.message}`, 'error')
+      }
+    } catch (err: any) {
+      showToast(`操作异常: ${err?.message || err}`, 'error')
+    }
   }
 
-  const envCount = processInfo?.Env?.length || 0
+  const envCount = Object.keys(processInfo?.Env || {}).length
   const socketCount = processInfo?.Sockets?.length || 0
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 bg-neutral-950/90 backdrop-blur-md">
-      {/* Top Action & Sub-Tab Bar */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-neutral-800/60 bg-neutral-900/40 shrink-0">
-        {/* Sub-Tab Navigation */}
+    <div className="h-full flex flex-col min-h-0 select-none">
+      {/* Detail Panel Subtab Toolbar */}
+      <div className="h-10 border-b border-white/[0.06] px-4 flex items-center justify-between shrink-0 bg-neutral-950/60 backdrop-blur-xl">
+        {/* Left: Linear-style Capsule Subtabs */}
         <div className="flex items-center gap-1">
           <button
-            onClick={() => setDetailSubTab('overview')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
-              detailSubTab === 'overview'
-                ? 'bg-neutral-800 text-neutral-100 shadow-sm'
+            onClick={() => setActiveTab('overview')}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer active:scale-95 ${
+              activeTab === 'overview'
+                ? 'bg-neutral-800 text-white shadow-sm border border-white/[0.08]'
                 : 'text-neutral-400 hover:text-neutral-200'
             }`}
           >
-            <Info className="w-3.5 h-3.5" />
+            <Info className="w-3.5 h-3.5 text-blue-400" />
             <span>进程概览</span>
           </button>
 
           <button
-            onClick={() => setDetailSubTab('env')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
-              detailSubTab === 'env'
-                ? 'bg-neutral-800 text-neutral-100 shadow-sm'
+            onClick={() => setActiveTab('env')}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer active:scale-95 ${
+              activeTab === 'env'
+                ? 'bg-neutral-800 text-white shadow-sm border border-white/[0.08]'
                 : 'text-neutral-400 hover:text-neutral-200'
             }`}
           >
-            <FileCode className="w-3.5 h-3.5" />
-            <span>环境变量 ({envCount})</span>
+            <Key className="w-3.5 h-3.5 text-amber-400" />
+            <span>环境变量</span>
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/[0.06] text-neutral-400 font-mono">
+              {envCount}
+            </span>
           </button>
 
           <button
-            onClick={() => setDetailSubTab('sockets')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
-              detailSubTab === 'sockets'
-                ? 'bg-neutral-800 text-neutral-100 shadow-sm'
+            onClick={() => setActiveTab('sockets')}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer active:scale-95 ${
+              activeTab === 'sockets'
+                ? 'bg-neutral-800 text-white shadow-sm border border-white/[0.08]'
                 : 'text-neutral-400 hover:text-neutral-200'
             }`}
           >
-            <Network className="w-3.5 h-3.5 text-blue-400" />
-            <span>网络连接 ({socketCount})</span>
+            <Network className="w-3.5 h-3.5 text-emerald-400" />
+            <span>网络连接</span>
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/[0.06] text-neutral-400 font-mono">
+              {socketCount}
+            </span>
           </button>
 
           <button
-            onClick={() => setDetailSubTab('raw')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
-              detailSubTab === 'raw'
-                ? 'bg-neutral-800 text-neutral-100 shadow-sm'
+            onClick={() => setActiveTab('json')}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer active:scale-95 ${
+              activeTab === 'json'
+                ? 'bg-neutral-800 text-white shadow-sm border border-white/[0.08]'
                 : 'text-neutral-400 hover:text-neutral-200'
             }`}
           >
-            <Code className="w-3.5 h-3.5 text-sky-400" />
+            <Code className="w-3.5 h-3.5 text-purple-400" />
             <span>原始 JSON</span>
           </button>
         </div>
 
-        {/* Action Button Group */}
+        {/* Right: Quick Action Buttons */}
         <div className="flex items-center gap-2">
-          {workingDir && workingDir !== 'unknown' && (
-            <div className="flex items-center gap-1 mr-2 border-r border-neutral-800 pr-2">
-              {isProjectDir ? (
+          {processInfo?.WorkingDir && processInfo.WorkingDir !== 'unknown' && (
+            isCodeProject(processInfo.Workspace, processInfo.WorkingDir) ? (
+              <div className="flex items-center gap-1.5">
                 <button
-                  onClick={() => openPath(workingDir, 'vscode')}
-                  className="px-2.5 py-1 rounded-md bg-blue-950/70 hover:bg-blue-900/80 text-blue-300 text-xs font-medium border border-blue-800/50 flex items-center gap-1 transition cursor-pointer"
-                  title="在 VS Code 中打开项目根目录"
+                  onClick={() => openPath(processInfo.WorkingDir!, 'vscode')}
+                  className="px-2.5 py-1 rounded-lg bg-blue-950/80 hover:bg-blue-900 text-blue-300 border border-blue-500/40 text-xs font-medium transition cursor-pointer active:scale-95 flex items-center gap-1 shadow-sm"
                 >
-                  <Code className="w-3 h-3" />
+                  <Code className="w-3.5 h-3.5" />
                   <span>VS Code</span>
                 </button>
-              ) : null}
+                <button
+                  onClick={() => openPath(processInfo.WorkingDir!, 'finder')}
+                  className="px-2.5 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-neutral-300 text-xs font-medium border border-white/[0.04] transition cursor-pointer active:scale-95 flex items-center gap-1"
+                >
+                  <FolderOpen className="w-3.5 h-3.5" />
+                  <span>Finder</span>
+                </button>
+              </div>
+            ) : (
               <button
-                onClick={() => openPath(workingDir, 'finder')}
-                className="px-2.5 py-1 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-medium flex items-center gap-1 transition cursor-pointer"
-                title={isSandbox ? '在访达中查看应用沙盒数据' : '在访达中定位工作目录'}
+                onClick={() => openPath(processInfo.WorkingDir!, 'finder')}
+                className="px-2.5 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-neutral-300 hover:text-white text-xs font-medium border border-white/[0.04] transition cursor-pointer active:scale-95 flex items-center gap-1"
               >
-                <FolderOpen className="w-3 h-3" />
-                <span>{isSandbox ? '定位沙盒' : 'Finder'}</span>
+                <FolderOpen className="w-3.5 h-3.5" />
+                <span>{processInfo.Workspace?.projectType === 'app_sandbox' ? '定位沙盒' : 'Finder'}</span>
               </button>
-            </div>
+            )
           )}
 
-          {/* Kill Actions */}
-          {isProtected ? (
-            <span className="text-xs px-2.5 py-1 rounded bg-amber-950/60 text-amber-300 border border-amber-800/40 flex items-center gap-1">
+          {/* Kill / Release Actions */}
+          {isSystemProcess ? (
+            <span
+              className="px-3 py-1 rounded-lg bg-amber-950/50 text-amber-400 border border-amber-500/30 text-xs font-medium flex items-center gap-1.5"
+              title="受保护的核心系统进程，已禁用强制终止"
+            >
               <ShieldAlert className="w-3.5 h-3.5" />
-              受保护系统进程
+              <span>受保护系统进程</span>
             </span>
-          ) : confirmKill ? (
-            <div className="flex items-center gap-1.5 animate-in fade-in">
-              <button
-                disabled={killing}
-                onClick={() => handleKill(false)}
-                className="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-neutral-950 font-semibold text-xs transition cursor-pointer"
-              >
-                优雅退出 (SIGTERM)
-              </button>
-              <button
-                disabled={killing}
-                onClick={() => handleKill(true)}
-                className="px-2.5 py-1 rounded bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs transition cursor-pointer"
-              >
-                强制杀死 (-9)
-              </button>
-              <button
-                onClick={() => setConfirmKill(false)}
-                className="px-2 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs cursor-pointer"
-              >
-                取消
-              </button>
-            </div>
           ) : (
             <button
-              onClick={() => setConfirmKill(true)}
-              className="px-3 py-1 rounded-md bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-600/40 text-xs font-medium flex items-center gap-1.5 transition shadow-sm cursor-pointer"
+              onClick={() => handleKill(false)}
+              className="px-3 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-700/60 text-xs font-medium transition shadow-md shadow-rose-950/40 cursor-pointer active:scale-95 flex items-center gap-1.5"
             >
               <PowerOff className="w-3.5 h-3.5" />
               <span>释放端口 / 终止进程</span>
@@ -166,12 +167,12 @@ export const DetailPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* Tab Contents: Clean Modular Orchestrator */}
-      <div className="flex-1 overflow-y-auto p-4">
-        {detailSubTab === 'overview' && <DetailOverviewTab />}
-        {detailSubTab === 'env' && <DetailEnvTab />}
-        {detailSubTab === 'sockets' && <DetailSocketsTab />}
-        {detailSubTab === 'raw' && <DetailRawJsonTab />}
+      {/* Tab Contents View */}
+      <div className="flex-1 overflow-y-auto p-4 min-h-0 bg-[#09090c]/60">
+        {activeTab === 'overview' && <DetailOverviewTab />}
+        {activeTab === 'env' && <DetailEnvTab />}
+        {activeTab === 'sockets' && <DetailSocketsTab />}
+        {activeTab === 'json' && <DetailRawJsonTab />}
       </div>
     </div>
   )

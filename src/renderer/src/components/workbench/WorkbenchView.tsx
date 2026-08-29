@@ -61,7 +61,7 @@ export const WorkbenchView: React.FC = () => {
     return () => clearInterval(interval)
   }, [appMode])
 
-  // GPU-Accelerated 120Hz Smooth CSS Variable Resizing (Zero React re-render during drag)
+  // GPU-Accelerated 120Hz Smooth CSS Variable Resizing
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDraggingSidebar.current && !isDraggingDetail.current) return
@@ -145,14 +145,14 @@ export const WorkbenchView: React.FC = () => {
           '--detail-h': `${detailHeight}px`
         } as React.CSSProperties
       }
-      className="flex flex-col w-screen h-screen bg-neutral-950 text-neutral-100 overflow-hidden select-none"
+      className="flex flex-col w-screen h-screen bg-[#0a0a0c] text-neutral-100 overflow-hidden select-none font-sans antialiased"
     >
-      {/* macOS Frameless Custom Titlebar / Toolbar */}
-      <div className="h-12 border-b border-neutral-800/80 bg-neutral-900/80 backdrop-blur-xl flex items-center justify-between px-4 drag-region shrink-0">
-        {/* Left: macOS Traffic light area offset (pl-20) + App Name + Active Target Badge */}
-        <div className="flex items-center gap-3 pl-20 no-drag">
+      {/* macOS Frameless Custom Titlebar with Hairline Glass Finish */}
+      <div className="h-12 border-b border-white/[0.06] bg-[#0d0d11]/90 backdrop-blur-2xl flex items-center justify-between px-4 drag-region shrink-0 relative z-30 shadow-[0_1px_12px_rgba(0,0,0,0.5)]">
+        {/* Left: macOS Traffic light area offset (pl-20) + App Badge + Active Target Context */}
+        <div className="flex items-center gap-3.5 pl-20 no-drag">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-md bg-blue-600 flex items-center justify-center font-bold text-xs text-white shadow-sm shadow-blue-500/40">
+            <div className="w-5 h-5 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-xs text-white shadow-md shadow-blue-500/25 border border-white/20">
               W
             </div>
             <span className="font-semibold text-xs text-neutral-200 tracking-tight">
@@ -161,26 +161,26 @@ export const WorkbenchView: React.FC = () => {
           </div>
 
           {selectedPort && (
-            <div className="flex items-center gap-2 pl-3 border-l border-neutral-800 text-xs">
-              <span className="font-mono font-bold text-blue-400">
+            <div className="flex items-center gap-2 pl-3.5 border-l border-white/[0.08] text-xs">
+              <span className="font-mono font-bold text-blue-400 bg-blue-950/60 px-1.5 py-0.5 rounded border border-blue-800/40">
                 :{selectedPort.port}
               </span>
-              <span className="text-neutral-400 font-medium truncate max-w-[140px]">
+              <span className="text-neutral-300 font-medium truncate max-w-[140px]">
                 {processInfo?.Command || selectedPort.processName}
               </span>
               <span className="text-neutral-500 font-mono text-[11px]">
-                (PID: {selectedPort.pid})
+                PID: {selectedPort.pid}
               </span>
             </div>
           )}
 
           {selectedProcess && !selectedPort && (
-            <div className="flex items-center gap-2 pl-3 border-l border-neutral-800 text-xs">
-              <span className="font-mono font-bold text-purple-400">
+            <div className="flex items-center gap-2 pl-3.5 border-l border-white/[0.08] text-xs">
+              <span className="font-mono font-bold text-purple-300 bg-purple-950/60 px-1.5 py-0.5 rounded border border-purple-800/40">
                 {selectedProcess.command}
               </span>
               <span className="text-neutral-500 font-mono text-[11px]">
-                (PID: {selectedProcess.pid})
+                PID: {selectedProcess.pid}
               </span>
               <span className="text-neutral-400 text-[11px] font-mono">
                 {selectedProcess.memPercent.toFixed(1)}% Mem
@@ -189,14 +189,14 @@ export const WorkbenchView: React.FC = () => {
           )}
         </div>
 
-        {/* Center: Primary Mode Switcher (Ports vs Processes) */}
+        {/* Center: Tactile Segmented Pill Switcher (Ports vs Processes) */}
         <div className="flex items-center no-drag">
-          <div className="flex items-center p-0.5 bg-neutral-950/90 border border-neutral-800 rounded-lg text-xs shadow-inner">
+          <div className="flex items-center p-0.5 bg-black/60 border border-white/[0.08] rounded-lg text-xs shadow-inner">
             <button
               onClick={() => setAppMode('ports')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition font-medium text-xs cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all duration-150 font-medium text-xs cursor-pointer active:scale-95 ${
                 appMode === 'ports'
-                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/30'
+                  ? 'bg-gradient-to-b from-blue-500 to-blue-600 text-white shadow-md shadow-blue-500/25 border-t border-white/25'
                   : 'text-neutral-400 hover:text-neutral-200'
               }`}
             >
@@ -205,9 +205,9 @@ export const WorkbenchView: React.FC = () => {
             </button>
             <button
               onClick={() => setAppMode('processes')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition font-medium text-xs cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all duration-150 font-medium text-xs cursor-pointer active:scale-95 ${
                 appMode === 'processes'
-                  ? 'bg-purple-600 text-white shadow-sm shadow-purple-500/30'
+                  ? 'bg-gradient-to-b from-purple-500 to-purple-600 text-white shadow-md shadow-purple-500/25 border-t border-white/25'
                   : 'text-neutral-400 hover:text-neutral-200'
               }`}
             >
@@ -220,12 +220,12 @@ export const WorkbenchView: React.FC = () => {
         {/* Right: View Switcher (Tree vs Graph) & Reload */}
         <div className="flex items-center gap-2 no-drag">
           {/* Tree vs Graph Toggle */}
-          <div className="flex items-center p-0.5 bg-neutral-950/80 border border-neutral-800/80 rounded-lg text-xs">
+          <div className="flex items-center p-0.5 bg-black/60 border border-white/[0.08] rounded-lg text-xs shadow-inner">
             <button
               onClick={() => setActiveView('tree')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition font-medium text-xs cursor-pointer ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-all duration-150 font-medium text-xs cursor-pointer active:scale-95 ${
                 activeView === 'tree'
-                  ? 'bg-neutral-800 text-neutral-100 shadow-sm'
+                  ? 'bg-neutral-800 text-white shadow-sm border-t border-white/15'
                   : 'text-neutral-400 hover:text-neutral-200'
               }`}
             >
@@ -234,9 +234,9 @@ export const WorkbenchView: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveView('graph')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition font-medium text-xs cursor-pointer ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-all duration-150 font-medium text-xs cursor-pointer active:scale-95 ${
                 activeView === 'graph'
-                  ? 'bg-neutral-800 text-neutral-100 shadow-sm'
+                  ? 'bg-neutral-800 text-white shadow-sm border-t border-white/15'
                   : 'text-neutral-400 hover:text-neutral-200'
               }`}
             >
@@ -249,34 +249,34 @@ export const WorkbenchView: React.FC = () => {
             onClick={handleRefresh}
             disabled={isRefreshing}
             title="刷新系统数据"
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 transition cursor-pointer"
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800/80 border border-transparent hover:border-white/[0.06] transition active:scale-90 cursor-pointer"
           >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-blue-400' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-400' : ''}`} />
           </button>
         </div>
       </div>
 
       {/* Main Workspace Body with 120Hz Ultra-Smooth Resizable Splitters */}
       <div className="flex-1 flex overflow-hidden min-h-0">
-        {/* Left Sidebar (Controlled by CSS variable --sidebar-w) */}
+        {/* Left Sidebar */}
         <div
           style={{ width: 'var(--sidebar-w)' }}
-          className="h-full shrink-0 flex flex-col min-w-0 will-change-[width]"
+          className="h-full shrink-0 flex flex-col min-w-0 will-change-[width] border-r border-white/[0.06] bg-[#0c0c10]/80 backdrop-blur-xl"
         >
           <PortSidebar />
         </div>
 
-        {/* Vertical Resize Splitter Bar */}
+        {/* Vertical Resize Splitter Bar with Hairline Indicator */}
         <div
           onMouseDown={startSidebarResize}
-          className="w-1.5 hover:w-2 bg-transparent hover:bg-blue-500/50 cursor-col-resize transition-all duration-100 relative z-20 flex items-center justify-center group -mx-0.5 select-none"
+          className="w-1.5 hover:w-2 bg-transparent hover:bg-blue-500/40 cursor-col-resize transition-all duration-100 relative z-20 flex items-center justify-center group -mx-0.5 select-none"
           title="拖拽调整侧边栏宽度"
         >
-          <div className="w-0.5 h-8 bg-neutral-700 group-hover:bg-blue-400 rounded-full transition" />
+          <div className="w-0.5 h-8 bg-neutral-700/60 group-hover:bg-blue-400 rounded-full transition" />
         </div>
 
         {/* Center / Right Canvas Area */}
-        <div className="flex-1 flex flex-col min-w-0 bg-neutral-950/40 overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0 bg-[#09090c] overflow-hidden relative">
           {/* Visual Canvas Area */}
           <div className="flex-1 flex overflow-hidden min-h-0">
             {activeView === 'tree' ? <CausalTree /> : <TopologyGraph />}
@@ -288,16 +288,16 @@ export const WorkbenchView: React.FC = () => {
               {/* Horizontal Resize Splitter Bar */}
               <div
                 onMouseDown={startDetailResize}
-                className="h-1.5 hover:h-2 bg-neutral-800/40 hover:bg-blue-500/50 cursor-row-resize transition-all duration-100 relative z-20 flex items-center justify-center group shrink-0 select-none"
+                className="h-1.5 hover:h-2 bg-neutral-850/60 hover:bg-blue-500/40 cursor-row-resize transition-all duration-100 relative z-20 flex items-center justify-center group shrink-0 select-none border-t border-white/[0.04]"
                 title="拖拽调整底部面板高度"
               >
-                <div className="w-12 h-0.5 bg-neutral-600 group-hover:bg-blue-400 rounded-full transition" />
+                <div className="w-12 h-0.5 bg-neutral-600/80 group-hover:bg-blue-400 rounded-full transition" />
               </div>
 
-              {/* Bottom Detail Panel (Controlled by CSS variable --detail-h) */}
+              {/* Bottom Detail Panel */}
               <div
                 style={{ height: 'var(--detail-h)' }}
-                className="shrink-0 flex flex-col min-h-0 overflow-hidden will-change-[height]"
+                className="shrink-0 flex flex-col min-h-0 overflow-hidden will-change-[height] bg-[#0c0c10]/95 backdrop-blur-2xl border-t border-white/[0.06]"
               >
                 <DetailPanel />
               </div>

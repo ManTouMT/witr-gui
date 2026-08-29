@@ -15,7 +15,7 @@ export const DetailEnvTab: React.FC = () => {
   })
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 select-none">
       {/* Top Search & Stats Bar */}
       <div className="flex items-center justify-between">
         <div className="relative flex items-center w-80">
@@ -25,12 +25,12 @@ export const DetailEnvTab: React.FC = () => {
             value={envFilter}
             onChange={(e) => setEnvFilter(e.target.value)}
             placeholder="搜索环境变量名或值 (如 PATH, NODE, USER)..."
-            className="w-full pl-8 pr-7 py-1.5 bg-neutral-900 border border-neutral-800 rounded-lg text-xs text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-blue-500/60 font-mono"
+            className="w-full pl-8 pr-7 py-1.5 bg-black/50 border border-white/[0.08] rounded-lg text-xs text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-blue-500/60 font-mono shadow-inner transition"
           />
           {envFilter && (
             <button
               onClick={() => setEnvFilter('')}
-              className="absolute right-2 p-0.5 text-neutral-500 hover:text-neutral-200"
+              className="absolute right-2 p-0.5 text-neutral-500 hover:text-neutral-200 transition cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -38,7 +38,7 @@ export const DetailEnvTab: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-neutral-400 font-mono bg-neutral-900 px-2.5 py-1 rounded-md border border-neutral-800">
+          <span className="text-xs text-neutral-400 font-mono bg-neutral-900/60 px-2.5 py-1 rounded-lg border border-white/[0.06]">
             匹配变量: <strong className="text-blue-400">{filteredEnv.length}</strong> / {envList.length}
           </span>
         </div>
@@ -60,14 +60,14 @@ export const DetailEnvTab: React.FC = () => {
             return (
               <div
                 key={idx}
-                className="flex items-center justify-between gap-3 p-2 rounded-xl bg-neutral-900/60 hover:bg-neutral-900 border border-neutral-800/80 hover:border-neutral-700 transition group min-w-0"
+                className="flex items-center justify-between gap-3 p-2 rounded-xl bg-neutral-900/40 hover:bg-neutral-900/80 border border-white/[0.06] hover:border-white/[0.12] transition-all group min-w-0 backdrop-blur-md shadow-sm"
               >
                 {/* Key & Value with Strict Alignment (w-36 fixed) */}
                 <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="w-36 shrink-0">
                     <button
                       onClick={() => copyWithFeedback(`${itemKey}-k`, key)}
-                      className="w-full text-left font-mono text-[11px] font-bold text-sky-400 bg-sky-950/60 hover:bg-sky-900/80 px-2 py-1 rounded-md border border-sky-800/50 truncate block transition cursor-pointer"
+                      className="w-full text-left font-mono text-[11px] font-bold text-sky-300 bg-sky-950/80 hover:bg-sky-900/90 px-2 py-1 rounded-lg border border-sky-500/40 truncate block transition cursor-pointer active:scale-95 shadow-sm"
                       title={`点击复制变量名: ${key}`}
                     >
                       {key}
@@ -87,7 +87,7 @@ export const DetailEnvTab: React.FC = () => {
                 <button
                   onClick={() => copyWithFeedback(itemKey, line)}
                   title="复制完整变量定义 (KEY=VALUE)"
-                  className="p-1 rounded-md text-neutral-500 group-hover:text-neutral-200 hover:bg-neutral-800 transition shrink-0"
+                  className="p-1 rounded-md text-neutral-500 hover:text-neutral-200 hover:bg-white/[0.08] transition shrink-0 cursor-pointer active:scale-90"
                 >
                   {isCopied(itemKey) ? (
                     <Check className="w-3.5 h-3.5 text-emerald-400" />

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 380" width="1000" height="380">
+  <defs>
+    <linearGradient id="treeBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </linearGradient>
+    <linearGradient id="treeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="380" rx="12" fill="url(#treeBg)" stroke="#1e293b" stroke-width="1.5"/>
+
+  <text x="40" y="36" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="bold">🌲 双向完整血缘家族树 (Ancestors ⬆️ &amp; Subprocesses ⬇️)</text>
+  <text x="40" y="56" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">典型应用场景：排查后台神秘 CPU/内存占用、定位僵尸子进程，以及分析多进程架构（Chrome / QQ / Electron）</text>
+
+  <!-- Left: Tree Flow Illustration -->
+  <g transform="translate(40, 80)">
+    <!-- Vertical Spine Line -->
+    <line x1="20" y1="10" x2="20" y2="240" stroke="url(#treeGrad)" stroke-width="3"/>
+
+    <!-- Node 1: Ancestor -->
+    <circle cx="20" cy="20" r="7" fill="#8b5cf6" stroke="#ddd6fe" stroke-width="2"/>
+    <rect x="44" y="2" width="420" height="42" rx="8" fill="#1e1b4b" stroke="#6366f1"/>
+    <text x="56" y="20" fill="#a5b4fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="bold">⬆️ 根守护系统 (Root Init)</text>
+    <text x="210" y="20" fill="#ffffff" font-family="ui-monospace, monospace" font-size="11" font-weight="bold">launchd (PID: 1)</text>
+    <text x="56" y="34" fill="#818cf8" font-family="ui-monospace, monospace" font-size="9">>_ /sbin/launchd (macOS System Daemon)</text>
+
+    <!-- Node 2: Target Process (e.g. QQ or Chrome) -->
+    <circle cx="20" cy="80" r="8" fill="#2563eb" stroke="#93c5fd" stroke-width="3"/>
+    <rect x="44" y="60" width="420" height="52" rx="8" fill="#172554" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="56" y="80" fill="#60a5fa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="bold">🎯 目标进程 (Target Process)</text>
+    <text x="220" y="80" fill="#ffffff" font-family="ui-monospace, monospace" font-size="12" font-weight="bold">QQ (PID: 1283)</text>
+    <text x="56" y="98" fill="#93c5fd" font-family="ui-monospace, monospace" font-size="9">>_ /Applications/QQ.app/Contents/MacOS/QQ (331.7 MB Mem • 4 Ports)</text>
+
+    <!-- Subprocesses / Children Bracket -->
+    <path d="M20 120 H 60 V 160 H 75" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="4,4"/>
+    <path d="M60 160 V 205 H 75" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="4,4"/>
+    <path d="M60 205 V 245 H 75" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="4,4"/>
+
+    <!-- Child 1 -->
+    <circle cx="75" cy="160" r="4" fill="#a855f7"/>
+    <rect x="85" y="142" width="379" height="34" rx="6" fill="#2e1065" stroke="#7e22ce"/>
+    <text x="96" y="158" fill="#e9d5ff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9" font-weight="bold">⬇️ CHILD 1: QQ Helper (Renderer) (PID: 121)</text>
+    <text x="96" y="170" fill="#c084fc" font-family="ui-monospace, monospace" font-size="8">113.9 MB Mem • Chromium Web Content Sandbox</text>
+
+    <!-- Child 2 -->
+    <circle cx="75" cy="205" r="4" fill="#a855f7"/>
+    <rect x="85" y="188" width="379" height="34" rx="6" fill="#2e1065" stroke="#7e22ce"/>
+    <text x="96" y="204" fill="#e9d5ff" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9" font-weight="bold">⬇️ CHILD 2: QQ Helper (Renderer) (PID: 2313)</text>
+    <text x="96" y="216" fill="#c084fc" font-family="ui-monospace, monospace" font-size="8">223.3 MB Mem • Chat Window Renderer Subprocess</text>
+
+    <!-- Child 3 -->
+    <circle cx="75" cy="245" r="4" fill="#a855f7"/>
+    <rect x="85" y="230" width="379" height="30" rx="6" fill="#1e1b4b" stroke="#4c1d95"/>
+    <text x="96" y="249" fill="#d8b4fe" font-family="ui-monospace, monospace" font-size="9">... 以及其余 10 个衍生 Helper / Document 渲染子进程</text>
+  </g>
+
+  <!-- Right: Scenario Callout Card -->
+  <g transform="translate(520, 80)">
+    <rect width="430" height="260" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="24" y="32" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="bold">💡 为什么需要双向血缘溯源？</text>
+    
+    <g transform="translate(24, 52)">
+      <rect width="382" height="52" rx="8" fill="#1e293b"/>
+      <text x="14" y="20" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">❓ 为什么某个端口突然被占用了？</text>
+      <text x="14" y="38" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">向上追溯父进程链，精准识别是被哪一个 Terminal 或 VSCode 窗口启动。</text>
+    </g>
+
+    <g transform="translate(24, 114)">
+      <rect width="382" height="52" rx="8" fill="#1e293b"/>
+      <text x="14" y="20" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">❓ 为什么主进程退出了系统依然卡顿？</text>
+      <text x="14" y="38" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">向下展开派生子进程，一眼定位遗留的僵尸 Helper、构建工具或孤儿进程。</text>
+    </g>
+
+    <g transform="translate(24, 176)">
+      <rect width="382" height="56" rx="8" fill="#1e293b"/>
+      <text x="14" y="20" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">❓ 大型多进程应用内存分布如何？</text>
+      <text x="14" y="38" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">主进程与所有 Renderer 子进程的内存与 CPU 实时分级统计，一览无余。</text>
+    </g>
+  </g>
+</svg>

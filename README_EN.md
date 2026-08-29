@@ -82,7 +82,7 @@ Say goodbye to cryptic `lsof -i :3000`, `netstat`, and blind `kill -9` commands.
 ### 3. 🕸️ Interactive React Flow Topology Graph
 
 <p align="center">
-  <img src="docs/images/screenshot-topology.png" alt="React Flow Topology Canvas" width="100%">
+  <img src="docs/images/screenshot-topology-v2.png" alt="React Flow Topology Canvas" width="100%">
 </p>
 
 * High-performance vector canvas powered by `@xyflow/react` for complex microservices clusters, daemon hierarchies, and multi-container topologies.

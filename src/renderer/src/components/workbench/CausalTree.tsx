@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useAppStore } from '../../stores/useAppStore'
 import { ProcessInfo } from '@shared/types'
 import {
@@ -13,11 +13,15 @@ import {
   AlertTriangle,
   Box,
   Server,
-  Activity
+  Activity,
+  GitFork,
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react'
 
 export const CausalTree: React.FC = () => {
   const { witrResult, inspecting, copyText, openPath } = useAppStore()
+  const [childrenExpanded, setChildrenExpanded] = useState(true)
 
   if (inspecting) {
     return (
@@ -31,6 +35,7 @@ export const CausalTree: React.FC = () => {
 
   const ancestry = witrResult?.Ancestry || []
   const targetProcess = witrResult?.Process
+  const children = witrResult?.Children || []
 
   if (ancestry.length === 0 && !targetProcess) {
     return (
@@ -45,9 +50,7 @@ export const CausalTree: React.FC = () => {
   const rawWarnings = witrResult?.Warnings || []
   const meaningfulWarnings = rawWarnings.filter((w) => {
     const lower = w.toLowerCase()
-    // Ignore macOS LaunchServices service name mismatch (e.g. application.com.tencent.qq.xxx)
     if (lower.includes('service name and process name do not match')) return false
-    // Ignore root directory on launchd daemons
     if (lower.includes('suspicious working directory: /') && targetProcess?.Service) return false
     return true
   })
@@ -79,15 +82,14 @@ export const CausalTree: React.FC = () => {
         <div>
           <h2 className="text-sm font-semibold text-neutral-100 flex items-center gap-2">
             <Layers className="w-4 h-4 text-blue-400" />
-            <span>因果溯源链路 (Causal Ancestry Hierarchy)</span>
+            <span>双向血缘家族树 (Full Process Family Tree)</span>
           </h2>
           <p className="text-[11px] text-neutral-400 mt-0.5">
-            追踪进程如何被启动 · Who started whom and why
+            向上溯源祖先 · 向下展开派生子进程 (Ancestors & Subprocesses)
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Subtle Warning Badge if any REAL warning exists */}
           {meaningfulWarnings.length > 0 && (
             <span
               className="text-[11px] px-2 py-0.5 rounded-md bg-amber-950/60 text-amber-300 border border-amber-800/50 flex items-center gap-1 font-medium"
@@ -98,13 +100,19 @@ export const CausalTree: React.FC = () => {
             </span>
           )}
 
-          <span className="text-xs px-2.5 py-1 rounded-md bg-neutral-900 border border-neutral-800 text-neutral-300 font-mono">
-            深度: {ancestry.length} 级调用
+          <span className="text-xs px-2 py-0.5 rounded-md bg-neutral-900 border border-neutral-800 text-neutral-300 font-mono">
+            祖先深度: {ancestry.length} 级
           </span>
+
+          {children.length > 0 && (
+            <span className="text-xs px-2 py-0.5 rounded-md bg-purple-950/60 border border-purple-800/50 text-purple-300 font-mono">
+              子进程: {children.length} 个
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Meaningful Warnings Banner (Only when non-trivial warnings occur) */}
+      {/* Meaningful Warnings Banner (Only when real warnings occur) */}
       {meaningfulWarnings.length > 0 && (
         <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-800/40 text-amber-200 text-xs space-y-1">
           <div className="flex items-center gap-1.5 font-semibold text-amber-300">
@@ -119,7 +127,7 @@ export const CausalTree: React.FC = () => {
         </div>
       )}
 
-      {/* Vertical Timeline Tree */}
+      {/* 1. Ancestry Vertical Hierarchy Tree (Upwards) */}
       <div className="relative pl-6 space-y-5 before:absolute before:left-3 before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-purple-500/80 before:via-blue-500/80 before:to-emerald-500/80">
         {ancestry.map((node, index) => {
           const role = getNodeRole(index, ancestry.length, node)
@@ -228,7 +236,6 @@ export const CausalTree: React.FC = () => {
                         </span>
                       </div>
 
-                      {/* Only show VS Code / Cursor when it's a real project directory */}
                       {isProject ? (
                         <div className="flex items-center gap-1 shrink-0">
                           <button
@@ -290,6 +297,71 @@ export const CausalTree: React.FC = () => {
           )
         })}
       </div>
+
+      {/* 2. Downwards Subprocesses / Children Hierarchy */}
+      {children.length > 0 && (
+        <div className="pt-2">
+          {/* Subprocess Header Toggle */}
+          <button
+            onClick={() => setChildrenExpanded(!childrenExpanded)}
+            className="w-full flex items-center justify-between p-3 rounded-xl bg-neutral-900/80 hover:bg-neutral-900 border border-purple-900/40 text-purple-200 transition mb-3"
+          >
+            <div className="flex items-center gap-2 font-semibold text-xs">
+              <GitFork className="w-4 h-4 text-purple-400" />
+              <span>由该进程孵化的衍生子进程 (Subprocesses / Helpers: {children.length} 个)</span>
+            </div>
+
+            <div className="flex items-center gap-1.5 text-neutral-400 text-xs">
+              <span>{childrenExpanded ? '收起' : '展开'}</span>
+              {childrenExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            </div>
+          </button>
+
+          {/* Children Cards Grid / Tree */}
+          {childrenExpanded && (
+            <div className="pl-6 space-y-2 border-l-2 border-purple-900/50 ml-3">
+              {children.map((child) => (
+                <div
+                  key={child.PID}
+                  className="p-3 rounded-xl bg-neutral-900/60 border border-neutral-800/80 hover:border-purple-800/50 transition text-xs space-y-1.5"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-950/80 text-purple-300 border border-purple-800/50">
+                        CHILD
+                      </span>
+                      <span className="font-bold text-neutral-200 font-mono">
+                        {child.Command}
+                      </span>
+                      <span className="text-neutral-500 font-mono text-[11px]">
+                        PID: <strong className="text-neutral-300">{child.PID}</strong>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 font-mono text-[11px]">
+                      {child.MemoryPercent !== undefined && child.MemoryPercent > 0 && (
+                        <span className="text-purple-300">
+                          {child.MemoryPercent.toFixed(1)}% Mem
+                        </span>
+                      )}
+                      {child.CPUPercent !== undefined && child.CPUPercent > 0 && (
+                        <span className="text-amber-400">
+                          {child.CPUPercent.toFixed(1)}% CPU
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Child Command Line */}
+                  <p className="font-mono text-[10px] text-neutral-400 truncate bg-neutral-950/60 p-1.5 rounded border border-neutral-850 select-text">
+                    {child.Cmdline || child.Command}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

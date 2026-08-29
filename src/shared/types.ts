@@ -1,3 +1,6 @@
+export type AppMode = 'ports' | 'processes'
+export type ProcessSortBy = 'cpu' | 'mem' | 'pid' | 'name'
+
 export interface PortInfo {
   port: number
   pid: number
@@ -6,6 +9,18 @@ export interface PortInfo {
   address: string
   user: string
   state?: string
+  isSystem?: boolean
+}
+
+export interface ProcessItem {
+  pid: number
+  ppid: number
+  user: string
+  cpuPercent: number
+  memPercent: number
+  command: string
+  cmdline: string
+  startedAt?: string
   isSystem?: boolean
 }
 
@@ -87,6 +102,7 @@ export interface WitrResult {
   Process?: ProcessInfo
   RestartCount?: number
   Ancestry?: ProcessInfo[]
+  Children?: ProcessInfo[] // Subprocesses / Helpers spawned by target process
   Source?: WitrSource
   Warnings?: string[] | null
   SocketInfo?: WitrSocketInfo | null

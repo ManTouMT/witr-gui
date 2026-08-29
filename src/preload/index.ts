@@ -6,6 +6,8 @@ import {
   KillRequest,
   OpenDirectoryRequest,
   PortInfo,
+  ProcessInfo,
+  ProcessItem,
   WitrResult
 } from '../shared/types'
 
@@ -15,6 +17,12 @@ export const api = {
 
   scanPorts: (): Promise<PortInfo[]> =>
     ipcRenderer.invoke(IPC_CHANNELS.SCAN_PORTS),
+
+  getAllProcesses: (): Promise<ProcessItem[]> =>
+    ipcRenderer.invoke(IPC_CHANNELS.GET_ALL_PROCESSES),
+
+  getProcessChildren: (pid: number): Promise<ProcessInfo[]> =>
+    ipcRenderer.invoke(IPC_CHANNELS.GET_PROCESS_CHILDREN, pid),
 
   inspectPort: (port: number): Promise<WitrResult> =>
     ipcRenderer.invoke(IPC_CHANNELS.INSPECT_PORT, port),

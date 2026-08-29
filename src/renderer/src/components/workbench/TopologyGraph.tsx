@@ -17,17 +17,17 @@ import { Cpu, HardDrive, Activity } from 'lucide-react'
 
 interface CustomNodeData {
   node: ProcessInfo
-  index: number
-  total: number
-  isTarget: boolean
+  index?: number
+  isTarget?: boolean
+  isChild?: boolean
   [key: string]: unknown
 }
 
 // Custom Node Component for React Flow
 const ProcessNode: React.FC<{ data: CustomNodeData }> = ({ data }) => {
-  const { node, index, isTarget } = data
+  const { node, index = 0, isTarget = false, isChild = false } = data
 
-  const isRoot = index === 0
+  const isRoot = index === 0 && !isChild
   const hasDocker = Boolean(node.Container)
 
   const formatBytes = (bytes?: number) => {
@@ -40,11 +40,13 @@ const ProcessNode: React.FC<{ data: CustomNodeData }> = ({ data }) => {
       className={`w-64 p-3.5 rounded-xl border transition-all shadow-xl backdrop-blur-md ${
         isTarget
           ? 'bg-neutral-900/95 border-blue-500 ring-2 ring-blue-500/40 shadow-blue-950/50'
-          : isRoot
-            ? 'bg-neutral-900/90 border-purple-500/60 shadow-purple-950/30'
-            : hasDocker
-              ? 'bg-neutral-900/90 border-cyan-500/60'
-              : 'bg-neutral-900/80 border-neutral-700/80 hover:border-neutral-500'
+          : isChild
+            ? 'bg-neutral-900/90 border-purple-800/60 shadow-purple-950/20'
+            : isRoot
+              ? 'bg-neutral-900/90 border-purple-500/60 shadow-purple-950/30'
+              : hasDocker
+                ? 'bg-neutral-900/90 border-cyan-500/60'
+                : 'bg-neutral-900/80 border-neutral-700/80 hover:border-neutral-500'
       }`}
     >
       {/* Input Handle for incoming ancestor edge */}
@@ -61,12 +63,14 @@ const ProcessNode: React.FC<{ data: CustomNodeData }> = ({ data }) => {
             className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
               isTarget
                 ? 'bg-blue-600/30 text-blue-300 border border-blue-500/40'
-                : isRoot
-                  ? 'bg-purple-950 text-purple-300 border border-purple-800/40'
-                  : 'bg-neutral-800 text-neutral-400'
+                : isChild
+                  ? 'bg-purple-950/80 text-purple-300 border border-purple-800/50'
+                  : isRoot
+                    ? 'bg-purple-950 text-purple-300 border border-purple-800/40'
+                    : 'bg-neutral-800 text-neutral-400'
             }`}
           >
-            {isTarget ? 'TARGET' : isRoot ? 'ROOT' : `L${index}`}
+            {isTarget ? 'TARGET' : isChild ? 'CHILD' : isRoot ? 'ROOT' : `L${index}`}
           </span>
           <span className="font-bold text-xs text-neutral-100 font-mono truncate">
             {node.Command}
@@ -90,6 +94,10 @@ const ProcessNode: React.FC<{ data: CustomNodeData }> = ({ data }) => {
             <span className="text-cyan-400 flex items-center gap-0.5">
               <HardDrive className="w-2.5 h-2.5" />
               {formatBytes(node.MemoryRSS)}
+            </span>
+          ) : node.MemoryPercent !== undefined && node.MemoryPercent > 0 ? (
+            <span className="text-purple-300">
+              {node.MemoryPercent.toFixed(1)}% Mem
             </span>
           ) : null}
           {node.CPUPercent !== undefined && node.CPUPercent > 0 ? (
@@ -121,41 +129,83 @@ export const TopologyGraph: React.FC = () => {
   const { witrResult, inspecting } = useAppStore()
 
   const ancestry = witrResult?.Ancestry || []
+  const children = witrResult?.Children || []
 
   const { nodes, edges } = useMemo(() => {
-    if (ancestry.length === 0) {
+    if (ancestry.length === 0 && children.length === 0) {
       return { nodes: [], edges: [] }
     }
 
-    const calculatedNodes: Node[] = ancestry.map((item, idx) => ({
-      id: `node-${item.PID}-${idx}`,
-      type: 'processNode',
-      position: { x: 40 + idx * 300, y: 150 },
-      data: {
-        node: item,
-        index: idx,
-        total: ancestry.length,
-        isTarget: idx === ancestry.length - 1
-      }
-    }))
-
+    const calculatedNodes: Node[] = []
     const calculatedEdges: Edge[] = []
-    for (let i = 1; i < calculatedNodes.length; i++) {
-      calculatedEdges.push({
-        id: `edge-${i - 1}-${i}`,
-        source: calculatedNodes[i - 1].id,
-        target: calculatedNodes[i].id,
-        animated: true,
-        style: { stroke: '#3b82f6', strokeWidth: 2 },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          color: '#3b82f6'
+
+    // 1. Add Ancestor Nodes horizontally
+    ancestry.forEach((item, idx) => {
+      const isTarget = idx === ancestry.length - 1
+      calculatedNodes.push({
+        id: `node-${item.PID}-${idx}`,
+        type: 'processNode',
+        position: { x: 40 + idx * 300, y: isTarget && children.length > 0 ? 150 : 150 },
+        data: {
+          node: item,
+          index: idx,
+          total: ancestry.length,
+          isTarget
         }
+      })
+
+      if (idx > 0) {
+        calculatedEdges.push({
+          id: `edge-${idx - 1}-${idx}`,
+          source: calculatedNodes[idx - 1].id,
+          target: calculatedNodes[idx].id,
+          animated: true,
+          style: { stroke: '#3b82f6', strokeWidth: 2 },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: '#3b82f6'
+          }
+        })
+      }
+    })
+
+    // 2. Add Children Nodes branching out from Target Node
+    if (ancestry.length > 0 && children.length > 0) {
+      const targetNodeId = calculatedNodes[calculatedNodes.length - 1].id
+      const targetX = 40 + (ancestry.length - 1) * 300
+      const childStartX = targetX + 320
+
+      children.forEach((child, cIdx) => {
+        // Vertical layout for children
+        const childNodeId = `child-${child.PID}-${cIdx}`
+        const childY = (cIdx - (children.length - 1) / 2) * 110 + 150
+
+        calculatedNodes.push({
+          id: childNodeId,
+          type: 'processNode',
+          position: { x: childStartX, y: childY },
+          data: {
+            node: child,
+            isChild: true
+          }
+        })
+
+        calculatedEdges.push({
+          id: `edge-target-child-${cIdx}`,
+          source: targetNodeId,
+          target: childNodeId,
+          animated: true,
+          style: { stroke: '#a855f7', strokeWidth: 1.5 },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: '#a855f7'
+          }
+        })
       })
     }
 
     return { nodes: calculatedNodes, edges: calculatedEdges }
-  }, [ancestry])
+  }, [ancestry, children])
 
   if (inspecting) {
     return (
@@ -191,6 +241,7 @@ export const TopologyGraph: React.FC = () => {
           nodeColor={(n) => {
             const data = n.data as unknown as CustomNodeData
             if (data?.isTarget) return '#3b82f6'
+            if (data?.isChild) return '#a855f7'
             if (data?.index === 0) return '#a855f7'
             return '#52525b'
           }}

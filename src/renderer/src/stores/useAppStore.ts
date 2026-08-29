@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { KillRequest, PortInfo, WitrResult } from '@shared/types'
+import { AppMode, KillRequest, PortInfo, ProcessItem, ProcessSortBy, WitrResult } from '@shared/types'
 
 export type PortCategory = 'all' | 'dev' | 'system'
 export type ViewMode = 'tree' | 'graph'
@@ -12,44 +12,87 @@ export interface ToastInfo {
 }
 
 interface AppState {
-  ports: PortInfo[]
-  loadingPorts: boolean
-  searchQuery: string
-  selectedPort: PortInfo | null
-  witrResult: WitrResult | null
-  inspecting: boolean
-  activeCategory: PortCategory
+  // Navigation
+  appMode: AppMode
   activeView: ViewMode
   detailSubTab: DetailTab
+  searchQuery: string
   toasts: ToastInfo[]
 
+  // Ports Mode State
+  ports: PortInfo[]
+  loadingPorts: boolean
+  selectedPort: PortInfo | null
+  activeCategory: PortCategory
+
+  // Processes Mode State
+  processes: ProcessItem[]
+  loadingProcesses: boolean
+  selectedProcess: ProcessItem | null
+  processSortBy: ProcessSortBy
+
+  // Shared Inspection State
+  witrResult: WitrResult | null
+  inspecting: boolean
+
   // Actions
+  setAppMode: (mode: AppMode) => void
+  setActiveView: (view: ViewMode) => void
+  setDetailSubTab: (tab: DetailTab) => void
+  setSearchQuery: (query: string) => void
+  setActiveCategory: (category: PortCategory) => void
+  setProcessSortBy: (sort: ProcessSortBy) => void
+
   fetchPorts: (force?: boolean) => Promise<void>
   selectPort: (port: PortInfo) => Promise<void>
+
+  fetchProcesses: (force?: boolean) => Promise<void>
+  selectProcess: (proc: ProcessItem) => Promise<void>
+
   inspectPort: (port: number) => Promise<void>
   inspectPid: (pid: number) => Promise<void>
   killCurrentProcess: (force?: boolean, actionType?: 'process' | 'docker' | 'pm2', targetId?: string) => Promise<boolean>
   openPath: (path: string, app?: 'vscode' | 'cursor' | 'finder' | 'terminal') => Promise<void>
   copyText: (text: string) => Promise<void>
-  setSearchQuery: (query: string) => void
-  setActiveCategory: (category: PortCategory) => void
-  setActiveView: (view: ViewMode) => void
-  setDetailSubTab: (tab: DetailTab) => void
+
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void
   removeToast: (id: string) => void
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
-  ports: [],
-  loadingPorts: false,
-  searchQuery: '',
-  selectedPort: null,
-  witrResult: null,
-  inspecting: false,
-  activeCategory: 'all',
+  appMode: 'ports',
   activeView: 'tree',
   detailSubTab: 'overview',
+  searchQuery: '',
   toasts: [],
+
+  ports: [],
+  loadingPorts: false,
+  selectedPort: null,
+  activeCategory: 'all',
+
+  processes: [],
+  loadingProcesses: false,
+  selectedProcess: null,
+  processSortBy: 'mem',
+
+  witrResult: null,
+  inspecting: false,
+
+  setAppMode: (mode) => {
+    set({ appMode: mode, searchQuery: '' })
+    if (mode === 'processes') {
+      get().fetchProcesses(false)
+    } else {
+      get().fetchPorts(false)
+    }
+  },
+
+  setActiveView: (view) => set({ activeView: view }),
+  setDetailSubTab: (tab) => set({ detailSubTab: tab }),
+  setSearchQuery: (query) => set({ searchQuery: query }),
+  setActiveCategory: (category) => set({ activeCategory: category }),
+  setProcessSortBy: (sort) => set({ processSortBy: sort }),
 
   fetchPorts: async (force = false) => {
     try {
@@ -57,11 +100,13 @@ export const useAppStore = create<AppState>((set, get) => ({
       const ports = force ? await window.api.scanPorts() : await window.api.getActivePorts()
       set({ ports, loadingPorts: false })
 
-      // Auto-select the first port if none selected
-      const currentSelected = get().selectedPort
-      if (ports.length > 0) {
-        if (!currentSelected || !ports.some((p: PortInfo) => p.port === currentSelected.port && p.pid === currentSelected.pid)) {
-          get().selectPort(ports[0])
+      // Auto-select first port if none selected in ports mode
+      if (get().appMode === 'ports') {
+        const currentSelected = get().selectedPort
+        if (ports.length > 0) {
+          if (!currentSelected || !ports.some((p: PortInfo) => p.port === currentSelected.port && p.pid === currentSelected.pid)) {
+            get().selectPort(ports[0])
+          }
         }
       }
     } catch (err: any) {
@@ -72,15 +117,50 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   selectPort: async (port: PortInfo) => {
-    set({ selectedPort: port, inspecting: true, witrResult: null })
+    set({ selectedPort: port, selectedProcess: null, inspecting: true, witrResult: null })
     try {
       const result = await window.api.inspectPort(port.port)
-      // Check if selectedPort is still this port (prevent race condition)
       if (get().selectedPort?.port === port.port) {
         set({ witrResult: result, inspecting: false })
       }
     } catch (err: any) {
       console.error('[Store] Failed to inspect port:', err)
+      set({ inspecting: false })
+      get().showToast(`进程深度溯源失败: ${err?.message || err}`, 'error')
+    }
+  },
+
+  fetchProcesses: async (_force = false) => {
+    try {
+      set({ loadingProcesses: true })
+      const procs = await window.api.getAllProcesses()
+      set({ processes: procs, loadingProcesses: false })
+
+      // Auto-select first process if none selected in processes mode
+      if (get().appMode === 'processes') {
+        const currentSelected = get().selectedProcess
+        if (procs.length > 0) {
+          if (!currentSelected || !procs.some((p) => p.pid === currentSelected.pid)) {
+            get().selectProcess(procs[0])
+          }
+        }
+      }
+    } catch (err: any) {
+      console.error('[Store] Failed to fetch processes:', err)
+      set({ loadingProcesses: false })
+      get().showToast(`获取系统进程失败: ${err?.message || err}`, 'error')
+    }
+  },
+
+  selectProcess: async (proc: ProcessItem) => {
+    set({ selectedProcess: proc, selectedPort: null, inspecting: true, witrResult: null })
+    try {
+      const result = await window.api.inspectPid(proc.pid)
+      if (get().selectedProcess?.pid === proc.pid) {
+        set({ witrResult: result, inspecting: false })
+      }
+    } catch (err: any) {
+      console.error('[Store] Failed to inspect process:', err)
       set({ inspecting: false })
       get().showToast(`进程深度溯源失败: ${err?.message || err}`, 'error')
     }
@@ -109,15 +189,15 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   killCurrentProcess: async (force = false, actionType = 'process', targetId?: string) => {
-    const { selectedPort, witrResult } = get()
-    if (!selectedPort) return false
+    const { selectedPort, selectedProcess, witrResult } = get()
+    const targetPid = witrResult?.Process?.PID || selectedPort?.pid || selectedProcess?.pid
+    const processName = witrResult?.Process?.Command || selectedPort?.processName || selectedProcess?.command || ''
 
-    const pid = witrResult?.Process?.PID || selectedPort.pid
-    const processName = witrResult?.Process?.Command || selectedPort.processName
+    if (!targetPid) return false
 
     try {
       const req: KillRequest = {
-        pid,
+        pid: targetPid,
         force,
         actionType,
         targetId
@@ -125,8 +205,12 @@ export const useAppStore = create<AppState>((set, get) => ({
       const res = await window.api.killProcess(req, processName)
       if (res.success) {
         get().showToast(res.message, 'success')
-        // Refresh port list
-        await get().fetchPorts(true)
+        // Refresh active list
+        if (get().appMode === 'ports') {
+          await get().fetchPorts(true)
+        } else {
+          await get().fetchProcesses(true)
+        }
         return true
       } else {
         get().showToast(res.message, 'error')
@@ -159,11 +243,6 @@ export const useAppStore = create<AppState>((set, get) => ({
       get().showToast('复制失败', 'error')
     }
   },
-
-  setSearchQuery: (query: string) => set({ searchQuery: query }),
-  setActiveCategory: (category: PortCategory) => set({ activeCategory: category }),
-  setActiveView: (view: ViewMode) => set({ activeView: view }),
-  setDetailSubTab: (tab: DetailTab) => set({ detailSubTab: tab }),
 
   showToast: (message: string, type = 'info') => {
     const id = Math.random().toString(36).substring(2, 9)

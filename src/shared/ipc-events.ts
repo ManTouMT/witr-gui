@@ -3,6 +3,10 @@ export const IPC_CHANNELS = {
   GET_ACTIVE_PORTS: 'ports:get-active',
   SCAN_PORTS: 'ports:scan',
 
+  // Full System Processes
+  GET_ALL_PROCESSES: 'processes:get-all',
+  GET_PROCESS_CHILDREN: 'processes:get-children',
+
   // Deep Witr Analysis
   INSPECT_PORT: 'witr:inspect-port',
   INSPECT_PID: 'witr:inspect-pid',

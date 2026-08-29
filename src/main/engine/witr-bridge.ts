@@ -4,6 +4,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { app } from 'electron'
 import { WitrResult } from '../../shared/types'
+import { processSniffer } from './process-sniffer'
 
 const execFileAsync = promisify(execFile)
 
@@ -99,7 +100,14 @@ export class WitrBridge {
     const cached = this.getCached(key)
     if (cached) return cached
 
+    // Make sure process sniffer table is up-to-date
+    await processSniffer.scanAllProcesses(false)
+
     const res = await this.runWitr(['--port', String(port)])
+    if (res.Process?.PID) {
+      res.Children = processSniffer.getChildrenOfPid(res.Process.PID)
+    }
+
     this.setCached(key, res)
     return res
   }
@@ -109,7 +117,13 @@ export class WitrBridge {
     const cached = this.getCached(key)
     if (cached) return cached
 
+    // Make sure process sniffer table is up-to-date
+    await processSniffer.scanAllProcesses(false)
+
     const res = await this.runWitr(['--pid', String(pid)])
+    const targetPid = res.Process?.PID || pid
+    res.Children = processSniffer.getChildrenOfPid(targetPid)
+
     this.setCached(key, res)
     return res
   }
@@ -120,6 +134,10 @@ export class WitrBridge {
     if (cached) return cached
 
     const res = await this.runWitr([name])
+    if (res.Process?.PID) {
+      res.Children = processSniffer.getChildrenOfPid(res.Process.PID)
+    }
+
     this.setCached(key, res)
     return res
   }

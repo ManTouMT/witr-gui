@@ -1,6 +1,7 @@
 import { ipcMain, clipboard } from 'electron'
 import { IPC_CHANNELS } from '../../shared/ipc-events'
 import { portSniffer } from '../engine/port-sniffer'
+import { processSniffer } from '../engine/process-sniffer'
 import { witrBridge } from '../engine/witr-bridge'
 import { actionResolver } from '../engine/action-resolver'
 import { KillRequest, OpenDirectoryRequest } from '../../shared/types'
@@ -16,7 +17,16 @@ export function registerIpcHandlers(): void {
     return await portSniffer.scanActivePorts(true)
   })
 
-  // 2. Deep Witr Inspection
+  // 2. Full System Processes
+  ipcMain.handle(IPC_CHANNELS.GET_ALL_PROCESSES, async () => {
+    return await processSniffer.scanAllProcesses(false)
+  })
+
+  ipcMain.handle(IPC_CHANNELS.GET_PROCESS_CHILDREN, (_, pid: number) => {
+    return processSniffer.getChildrenOfPid(pid)
+  })
+
+  // 3. Deep Witr Inspection
   ipcMain.handle(IPC_CHANNELS.INSPECT_PORT, async (_, port: number) => {
     return await witrBridge.inspectPort(port)
   })
@@ -29,11 +39,12 @@ export function registerIpcHandlers(): void {
     return await witrBridge.runWitr(['--container', name])
   })
 
-  // 3. Actions
+  // 4. Actions
   ipcMain.handle(IPC_CHANNELS.KILL_PROCESS, async (_, req: KillRequest, processName?: string) => {
     const result = await actionResolver.killProcess(req, processName)
-    // Invalidate port scan cache
+    // Invalidate port and process caches
     await portSniffer.scanActivePorts(true)
+    await processSniffer.scanAllProcesses(true)
     return result
   })
 
@@ -46,7 +57,7 @@ export function registerIpcHandlers(): void {
     return true
   })
 
-  // 4. Window Management
+  // 5. Window Management
   ipcMain.handle(IPC_CHANNELS.SHOW_WORKBENCH, () => {
     windowManager.showWorkbenchWindow()
     windowManager.hideTrayWindow()

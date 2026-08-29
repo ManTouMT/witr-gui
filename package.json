@@ -7,9 +7,17 @@
   "bin": {
     "witr-gui": "./bin/witr-gui.js"
   },
+  "files": [
+    "bin",
+    "out/renderer",
+    "resources/bin",
+    "README.md",
+    "README_EN.md"
+  ],
   "author": "witr-gui team",
   "homepage": "https://github.com/pranshuparmar/witr",
   "scripts": {
+    "prepack": "pnpm run build",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "pnpm run typecheck:node && pnpm run typecheck:web",

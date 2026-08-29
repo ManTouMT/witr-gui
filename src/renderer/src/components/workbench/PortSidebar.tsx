@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAppStore } from '../../stores/useAppStore'
-import { Search, RefreshCw, Cpu, HardDrive, Hash, AlignLeft } from 'lucide-react'
+import { Search, RefreshCw, Cpu, HardDrive, Hash, AlignLeft, X } from 'lucide-react'
 
 export const PortSidebar: React.FC = () => {
   const {
@@ -26,16 +26,10 @@ export const PortSidebar: React.FC = () => {
   } = useAppStore()
 
   const devPorts = [3000, 5173, 8080, 8000, 4000, 4200, 8081, 9000, 3001, 8888]
+  const q = searchQuery.toLowerCase().trim()
 
-  // Filter Ports
-  const filteredPorts = ports.filter((item) => {
-    if (activeCategory === 'dev') {
-      if (!devPorts.includes(item.port)) return false
-    } else if (activeCategory === 'system') {
-      if (!item.isSystem) return false
-    }
-
-    const q = searchQuery.toLowerCase().trim()
+  // 1. Calculate query-matched ports
+  const queryMatchedPorts = ports.filter((item) => {
     if (!q) return true
     return (
       String(item.port).includes(q) ||
@@ -45,10 +39,21 @@ export const PortSidebar: React.FC = () => {
     )
   })
 
-  // Filter and Sort Processes
+  // Category counts reflecting the current search query
+  const allPortsCount = queryMatchedPorts.length
+  const devPortsCount = queryMatchedPorts.filter((p) => devPorts.includes(p.port)).length
+  const systemPortsCount = queryMatchedPorts.filter((p) => p.isSystem).length
+
+  // Filtered ports for active category
+  const filteredPorts = queryMatchedPorts.filter((item) => {
+    if (activeCategory === 'dev') return devPorts.includes(item.port)
+    if (activeCategory === 'system') return item.isSystem
+    return true
+  })
+
+  // 2. Filter and Sort Processes
   const filteredProcesses = processes
     .filter((item) => {
-      const q = searchQuery.toLowerCase().trim()
       if (!q) return true
       return (
         String(item.pid).includes(q) ||
@@ -65,9 +70,6 @@ export const PortSidebar: React.FC = () => {
       if (processSortBy === 'name') return a.command.localeCompare(b.command)
       return 0
     })
-
-  const devCount = ports.filter((p) => devPorts.includes(p.port)).length
-  const systemCount = ports.filter((p) => p.isSystem).length
 
   return (
     <div className="w-80 h-full flex flex-col border-r border-neutral-800/80 bg-neutral-950/60 backdrop-blur-md">
@@ -98,7 +100,7 @@ export const PortSidebar: React.FC = () => {
           </button>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar with 1-click Clear */}
         <div className="relative flex items-center">
           <Search className="w-3.5 h-3.5 absolute left-2.5 text-neutral-500" />
           <input
@@ -110,8 +112,17 @@ export const PortSidebar: React.FC = () => {
                 ? '按端口、进程名、PID 过滤...'
                 : '搜索全部进程 (如 qq, node, vite)...'
             }
-            className="w-full pl-8 pr-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded-lg text-xs text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition font-mono"
+            className="w-full pl-8 pr-7 py-1.5 bg-neutral-900 border border-neutral-800 rounded-lg text-xs text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition font-mono"
           />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2 p-0.5 text-neutral-500 hover:text-neutral-200 transition"
+              title="清空搜索"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
 
         {/* Sub-Filters: Ports Categories vs Process Sorting */}
@@ -125,7 +136,7 @@ export const PortSidebar: React.FC = () => {
                   : 'text-neutral-400 hover:text-neutral-200'
               }`}
             >
-              全部 ({ports.length})
+              全部 ({allPortsCount})
             </button>
             <button
               onClick={() => setActiveCategory('dev')}
@@ -135,7 +146,7 @@ export const PortSidebar: React.FC = () => {
                   : 'text-neutral-400 hover:text-neutral-200'
               }`}
             >
-              开发 ({devCount})
+              开发 ({devPortsCount})
             </button>
             <button
               onClick={() => setActiveCategory('system')}
@@ -145,7 +156,7 @@ export const PortSidebar: React.FC = () => {
                   : 'text-neutral-400 hover:text-neutral-200'
               }`}
             >
-              系统 ({systemCount})
+              系统 ({systemPortsCount})
             </button>
           </div>
         ) : (
@@ -202,8 +213,16 @@ export const PortSidebar: React.FC = () => {
       <div className="flex-1 overflow-y-auto p-2 space-y-1">
         {appMode === 'ports' ? (
           filteredPorts.length === 0 ? (
-            <div className="py-12 text-center text-xs text-neutral-500">
-              {loadingPorts ? '正在扫描活动端口...' : '无匹配端口'}
+            <div className="py-12 flex flex-col items-center justify-center text-xs text-neutral-500 gap-2">
+              <span>{loadingPorts ? '正在扫描活动端口...' : q ? `未找到匹配 "${searchQuery}" 的端口` : '无匹配端口'}</span>
+              {q && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition"
+                >
+                  清空搜索条件
+                </button>
+              )}
             </div>
           ) : (
             filteredPorts.map((item) => {
@@ -262,8 +281,16 @@ export const PortSidebar: React.FC = () => {
             })
           )
         ) : filteredProcesses.length === 0 ? (
-          <div className="py-12 text-center text-xs text-neutral-500">
-            {loadingProcesses ? '正在扫描系统进程...' : '无匹配系统进程'}
+          <div className="py-12 flex flex-col items-center justify-center text-xs text-neutral-500 gap-2">
+            <span>{loadingProcesses ? '正在扫描系统进程...' : q ? `未找到匹配 "${searchQuery}" 的系统进程` : '无匹配系统进程'}</span>
+            {q && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition"
+              >
+                清空搜索条件
+              </button>
+            )}
           </div>
         ) : (
           filteredProcesses.map((item) => {

@@ -1,7 +1,7 @@
 # Witr GUI 🖥️⚡
 
 <p align="center">
-  <img src="docs/images/screenshot-workbench.png" alt="Witr GUI Visual Workbench" width="100%">
+  <img src="docs/images/screenshot-workbench-v3.png" alt="Witr GUI Visual Workbench" width="100%">
 </p>
 
 <p align="center">
@@ -84,7 +84,7 @@
 ### 3. 🕸️ 交互式 React Flow 拓扑画布
 
 <p align="center">
-  <img src="docs/images/screenshot-topology-v2.png" alt="React Flow Topology Canvas" width="100%">
+  <img src="docs/images/screenshot-topology-v3.png" alt="React Flow Topology Canvas" width="100%">
 </p>
 
 * **无限矢量网络拓扑**：

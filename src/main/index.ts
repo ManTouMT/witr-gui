@@ -80,19 +80,30 @@ app.whenReady().then(async () => {
     fs.writeFileSync(join(docsImagesDir, 'screenshot-processes.png'), img2.toPNG())
     console.log('✓ Captured docs/images/screenshot-processes.png')
 
-    // 3. Switch to Interactive Topology Graph View
+    // 3. Switch to Interactive Topology Graph View with Orca Process
     await mainWin.webContents.executeJavaScript(`
       (() => {
-        const btns = Array.from(document.querySelectorAll('button'));
-        const btn = btns.find(b => b.textContent && b.textContent.includes('交互拓扑图'));
-        if (btn) btn.click();
+        const input = document.querySelector('input');
+        if (input) {
+          const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+          nativeInputValueSetter.call(input, 'orca');
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        setTimeout(() => {
+          const cards = document.querySelectorAll('div.cursor-pointer');
+          if (cards.length > 0) cards[0].click();
+          const btns = Array.from(document.querySelectorAll('button'));
+          const btn = btns.find(b => b.textContent && b.textContent.includes('交互拓扑图'));
+          if (btn) btn.click();
+        }, 800);
       })()
     `)
-    await new Promise((r) => setTimeout(r, 2500))
+    await new Promise((r) => setTimeout(r, 3500))
 
     const img3 = await mainWin.webContents.capturePage()
     fs.writeFileSync(join(docsImagesDir, 'screenshot-topology.png'), img3.toPNG())
-    console.log('✓ Captured docs/images/screenshot-topology.png')
+    fs.writeFileSync(join(docsImagesDir, 'screenshot-topology-v2.png'), img3.toPNG())
+    console.log('✓ Captured docs/images/screenshot-topology.png & v2 with Orca')
 
     // 4. Capture Tray Popover View
     trayWin.show()

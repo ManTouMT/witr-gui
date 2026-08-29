@@ -1,6 +1,6 @@
 {
   "name": "witr-gui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Visual Causal Process & Port Inspector powered by witr",
   "main": "./out/main/index.js",

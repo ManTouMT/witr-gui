@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ManTouMT/witr-gui/releases/tag/v0.1.0"><img src="https://img.shields.io/badge/Release-v0.1.0-blue.svg" alt="Release"></a>
+  <a href="https://github.com/ManTouMT/witr-gui/releases/tag/v0.1.1"><img src="https://img.shields.io/badge/Release-v0.1.1-blue.svg" alt="Release"></a>
   <img src="https://img.shields.io/badge/Platform-macOS%20(Apple%20Silicon%20%7C%20Intel)-black.svg" alt="Platform">
   <img src="https://img.shields.io/badge/TypeScript-5.9-blue.svg" alt="TypeScript">
   <img src="https://img.shields.io/badge/Electron-34-47848F.svg" alt="Electron">
@@ -37,10 +37,10 @@
 
 | 硬件架构 | 安装包格式 | 一键下载链接 |
 | :--- | :--- | :--- |
-| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **DMG 安装镜像 (推荐)** | [**`Witr.GUI-0.1.0-arm64.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.0/Witr.GUI-0.1.0-arm64.dmg) |
-| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **绿色免安装 Zip** | [**`Witr.GUI-0.1.0-arm64-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.0/Witr.GUI-0.1.0-arm64-mac.zip) |
-| 🖥️ **Intel Mac (x64)** | **DMG 安装镜像** | [**`Witr.GUI-0.1.0.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.0/Witr.GUI-0.1.0.dmg) |
-| 🖥️ **Intel Mac (x64)** | **绿色免安装 Zip** | [**`Witr.GUI-0.1.0-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.0/Witr.GUI-0.1.0-mac.zip) |
+| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **DMG 安装镜像 (推荐)** | [**`Witr.GUI-0.1.1-arm64.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64.dmg) |
+| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **绿色免安装 Zip** | [**`Witr.GUI-0.1.1-arm64-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64-mac.zip) |
+| 🖥️ **Intel Mac (x64)** | **DMG 安装镜像** | [**`Witr.GUI-0.1.1.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1.dmg) |
+| 🖥️ **Intel Mac (x64)** | **绿色免安装 Zip** | [**`Witr.GUI-0.1.1-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-mac.zip) |
 
 > [!TIP]
 > **内置完整引擎**：`witr-gui` 已经内置了完全自包含的 `witr` 高性能底层二进制文件，无需预先安装 Homebrew、Go、Python 或 Node.js。

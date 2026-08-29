@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ManTouMT/witr-gui/releases/tag/v0.1.0"><img src="https://img.shields.io/badge/Release-v0.1.0-blue.svg" alt="Release"></a>
+  <a href="https://github.com/ManTouMT/witr-gui/releases/tag/v0.1.1"><img src="https://img.shields.io/badge/Release-v0.1.1-blue.svg" alt="Release"></a>
   <img src="https://img.shields.io/badge/Platform-macOS%20(Apple%20Silicon%20%7C%20Intel)-black.svg" alt="Platform">
   <img src="https://img.shields.io/badge/TypeScript-5.9-blue.svg" alt="TypeScript">
   <img src="https://img.shields.io/badge/Electron-34-47848F.svg" alt="Electron">
@@ -37,10 +37,10 @@ Say goodbye to cryptic `lsof -i :3000`, `netstat`, and blind `kill -9` commands.
 
 | Architecture | Installer Format | Download Link |
 | :--- | :--- | :--- |
-| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **DMG Installer (Recommended)** | [**`Witr.GUI-0.1.0-arm64.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.0/Witr.GUI-0.1.0-arm64.dmg) |
-| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **Portable Zip** | [**`Witr.GUI-0.1.0-arm64-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.0/Witr.GUI-0.1.0-arm64-mac.zip) |
-| 🖥️ **Intel Mac (x64)** | **DMG Installer** | [**`Witr.GUI-0.1.0.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.0/Witr.GUI-0.1.0.dmg) |
-| 🖥️ **Intel Mac (x64)** | **Portable Zip** | [**`Witr.GUI-0.1.0-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.0/Witr.GUI-0.1.0-mac.zip) |
+| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **DMG Installer (Recommended)** | [**`Witr.GUI-0.1.1-arm64.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64.dmg) |
+| 🍏 **Apple Silicon (M1 / M2 / M3 / M4)** | **Portable Zip** | [**`Witr.GUI-0.1.1-arm64-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-arm64-mac.zip) |
+| 🖥️ **Intel Mac (x64)** | **DMG Installer** | [**`Witr.GUI-0.1.1.dmg`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1.dmg) |
+| 🖥️ **Intel Mac (x64)** | **Portable Zip** | [**`Witr.GUI-0.1.1-mac.zip`**](https://github.com/ManTouMT/witr-gui/releases/download/v0.1.1/Witr.GUI-0.1.1-mac.zip) |
 
 > [!TIP]
 > **Bundled Binary**: `witr-gui` embeds a pre-built standalone `witr` binary. You do not need to install Go, Python, Node.js, or Homebrew.

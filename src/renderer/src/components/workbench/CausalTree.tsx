@@ -195,7 +195,7 @@ export const CausalTree: React.FC = () => {
             <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500 border-2 border-white shadow-md shadow-blue-500" />
           </div>
 
-          <div className="p-4.5 rounded-2xl border border-blue-500/50 bg-gradient-to-b from-blue-950/40 via-[#11131a] to-[#0c0d12] shadow-2xl shadow-blue-950/60 backdrop-blur-xl transition-all relative overflow-hidden">
+          <div className="p-5 rounded-2xl border border-blue-500/50 bg-gradient-to-b from-blue-950/40 via-[#11131a] to-[#0c0d12] shadow-2xl shadow-blue-950/60 backdrop-blur-xl transition-all relative overflow-hidden">
             {/* Top Ambient Glow Highlight */}
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent" />
 

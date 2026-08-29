@@ -1,8 +1,7 @@
-<p align="center">
-  <img src="docs/images/app-icon.png" alt="Witr GUI Icon" width="128" height="128">
-</p>
-
-<h1 align="center">Witr GUI 🖥️⚡</h1>
+<h1 align="center">
+  <img src="docs/images/app-icon-v2.png" alt="Witr GUI Icon" width="38" height="38" style="vertical-align: middle; margin-right: 6px;">
+  Witr GUI 🖥️⚡
+</h1>
 
 <p align="center">
   <strong>现代化可视化全链路进程因果血缘追溯与智能端口排障工作台</strong><br>

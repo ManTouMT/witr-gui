@@ -1,6 +1,7 @@
 import { BrowserWindow } from 'electron'
 import { is } from '@electron-toolkit/utils'
 import { join } from 'path'
+import { getPreloadPath } from './utils'
 
 export class MainWindowManager {
   private window: BrowserWindow | null = null
@@ -23,7 +24,7 @@ export class MainWindowManager {
       visualEffectState: 'active',
       autoHideMenuBar: true,
       webPreferences: {
-        preload: join(__dirname, '../preload/index.js'),
+        preload: getPreloadPath(),
         sandbox: false,
         contextIsolation: true
       }

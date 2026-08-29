@@ -33,9 +33,9 @@ export const WorkbenchView: React.FC = () => {
   return (
     <div className="flex flex-col w-screen h-screen bg-neutral-950 text-neutral-100 overflow-hidden select-none">
       {/* macOS Frameless Custom Titlebar / Toolbar */}
-      <div className="h-11 border-b border-neutral-800/80 bg-neutral-900/80 backdrop-blur-xl flex items-center justify-between px-4 drag-region">
-        {/* Left: Traffic light area offset + App Name */}
-        <div className="flex items-center gap-3 pl-16 no-drag">
+      <div className="h-12 border-b border-neutral-800/80 bg-neutral-900/80 backdrop-blur-xl flex items-center justify-between px-4 drag-region">
+        {/* Left: macOS Traffic light area offset (pl-20 = 80px) + App Name */}
+        <div className="flex items-center gap-3 pl-20 no-drag">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-blue-600 flex items-center justify-center font-bold text-xs text-white shadow-sm shadow-blue-500/40">
               W

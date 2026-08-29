@@ -1,6 +1,7 @@
 import { BrowserWindow, screen, Tray } from 'electron'
 import { is } from '@electron-toolkit/utils'
 import { join } from 'path'
+import { getPreloadPath } from './utils'
 
 export class TrayWindowManager {
   private window: BrowserWindow | null = null
@@ -24,7 +25,7 @@ export class TrayWindowManager {
       transparent: true,
       hasShadow: true,
       webPreferences: {
-        preload: join(__dirname, '../preload/index.js'),
+        preload: getPreloadPath(),
         sandbox: false,
         contextIsolation: true
       }

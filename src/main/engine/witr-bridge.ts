@@ -5,6 +5,7 @@ import * as path from 'path'
 import { app } from 'electron'
 import { WitrResult } from '../../shared/types'
 import { processSniffer } from './process-sniffer'
+import { detectWorkspace } from './workspace-detector'
 
 const execFileAsync = promisify(execFile)
 
@@ -104,8 +105,11 @@ export class WitrBridge {
     await processSniffer.scanAllProcesses(false)
 
     const res = await this.runWitr(['--port', String(port)])
-    if (res.Process?.PID) {
-      res.Children = processSniffer.getChildrenOfPid(res.Process.PID)
+    if (res.Process) {
+      if (res.Process.PID) {
+        res.Children = processSniffer.getChildrenOfPid(res.Process.PID)
+      }
+      res.Process.Workspace = detectWorkspace(res.Process.WorkingDir)
     }
 
     this.setCached(key, res)
@@ -123,6 +127,9 @@ export class WitrBridge {
     const res = await this.runWitr(['--pid', String(pid)])
     const targetPid = res.Process?.PID || pid
     res.Children = processSniffer.getChildrenOfPid(targetPid)
+    if (res.Process) {
+      res.Process.Workspace = detectWorkspace(res.Process.WorkingDir)
+    }
 
     this.setCached(key, res)
     return res
@@ -134,8 +141,11 @@ export class WitrBridge {
     if (cached) return cached
 
     const res = await this.runWitr([name])
-    if (res.Process?.PID) {
-      res.Children = processSniffer.getChildrenOfPid(res.Process.PID)
+    if (res.Process) {
+      if (res.Process.PID) {
+        res.Children = processSniffer.getChildrenOfPid(res.Process.PID)
+      }
+      res.Process.Workspace = detectWorkspace(res.Process.WorkingDir)
     }
 
     this.setCached(key, res)

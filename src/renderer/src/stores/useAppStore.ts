@@ -178,7 +178,17 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   inspectPid: async (pid: number) => {
-    set({ inspecting: true })
+    const matchingProc = get().processes.find((p) => p.pid === pid)
+    const matchingPort = get().ports.find((p) => p.pid === pid)
+
+    if (matchingProc) {
+      set({ selectedProcess: matchingProc, selectedPort: matchingPort || null, inspecting: true })
+    } else if (matchingPort) {
+      set({ selectedPort: matchingPort, selectedProcess: null, inspecting: true })
+    } else {
+      set({ inspecting: true })
+    }
+
     try {
       const result = await window.api.inspectPid(pid)
       set({ witrResult: result, inspecting: false })

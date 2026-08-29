@@ -74,6 +74,15 @@ export interface ProcessInfo {
   ExeDeleted?: boolean
   Memory?: ProcessMemory
   IO?: ProcessIO
+  Workspace?: WorkspaceInfo
+}
+
+export interface WorkspaceInfo {
+  isProject: boolean
+  projectType?: 'node' | 'next' | 'vite' | 'go' | 'rust' | 'python' | 'java' | 'git' | 'app_sandbox' | 'system' | 'unknown'
+  projectLabel?: string
+  frameworkName?: string
+  hasGit?: boolean
 }
 
 export interface WitrSource {

@@ -1,6 +1,15 @@
 import React from 'react'
 import { useAppStore } from '../../stores/useAppStore'
-import { Search, RefreshCw, Cpu, HardDrive, Hash, AlignLeft, X } from 'lucide-react'
+import {
+  Search,
+  RefreshCw,
+  Cpu,
+  HardDrive,
+  Hash,
+  AlignLeft,
+  X,
+  PowerOff
+} from 'lucide-react'
 
 export const PortSidebar: React.FC = () => {
   const {
@@ -22,7 +31,8 @@ export const PortSidebar: React.FC = () => {
 
     searchQuery,
     setSearchQuery,
-    setActiveCategory
+    setActiveCategory,
+    showToast
   } = useAppStore()
 
   const devPorts = [3000, 5173, 8080, 8000, 4000, 4200, 8081, 9000, 3001, 8888]
@@ -71,10 +81,26 @@ export const PortSidebar: React.FC = () => {
       return 0
     })
 
+  const handleQuickKill = async (e: React.MouseEvent, pid: number, force: boolean) => {
+    e.stopPropagation()
+    try {
+      const res = await window.api.killProcess({ pid, force, actionType: 'process' })
+      if (res.success) {
+        showToast(`已${force ? '强制终止' : '释放'} PID: ${pid}`, 'success')
+        if (appMode === 'ports') fetchPorts(true)
+        else fetchProcesses(true)
+      } else {
+        showToast(`终止失败: ${res.message}`, 'error')
+      }
+    } catch (err: any) {
+      showToast(`操作异常: ${err?.message || err}`, 'error')
+    }
+  }
+
   return (
-    <div className="w-80 h-full flex flex-col border-r border-neutral-800/80 bg-neutral-950/60 backdrop-blur-md">
+    <div className="w-full h-full flex flex-col border-r border-neutral-800/80 bg-neutral-950/60 backdrop-blur-md relative">
       {/* Top Search & Filter Header */}
-      <div className="p-3.5 space-y-2.5 border-b border-neutral-800/60">
+      <div className="p-3.5 space-y-2.5 border-b border-neutral-800/60 shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <span className="font-semibold text-xs text-neutral-300">
@@ -90,7 +116,7 @@ export const PortSidebar: React.FC = () => {
             onClick={() => (appMode === 'ports' ? fetchPorts(true) : fetchProcesses(true))}
             disabled={appMode === 'ports' ? loadingPorts : loadingProcesses}
             title="刷新"
-            className="p-1 rounded text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 transition"
+            className="p-1 rounded text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800 transition cursor-pointer"
           >
             <RefreshCw
               className={`w-3.5 h-3.5 ${
@@ -117,7 +143,7 @@ export const PortSidebar: React.FC = () => {
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-2 p-0.5 text-neutral-500 hover:text-neutral-200 transition"
+              className="absolute right-2 p-0.5 text-neutral-500 hover:text-neutral-200 transition cursor-pointer"
               title="清空搜索"
             >
               <X className="w-3.5 h-3.5" />
@@ -130,7 +156,7 @@ export const PortSidebar: React.FC = () => {
           <div className="flex items-center gap-1 p-0.5 bg-neutral-900/80 rounded-lg border border-neutral-800/60 text-xs">
             <button
               onClick={() => setActiveCategory('all')}
-              className={`flex-1 py-1 px-1.5 rounded-md text-[11px] font-medium transition ${
+              className={`flex-1 py-1 px-1.5 rounded-md text-[11px] font-medium transition cursor-pointer ${
                 activeCategory === 'all'
                   ? 'bg-neutral-800 text-neutral-100 shadow-sm'
                   : 'text-neutral-400 hover:text-neutral-200'
@@ -140,7 +166,7 @@ export const PortSidebar: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveCategory('dev')}
-              className={`flex-1 py-1 px-1.5 rounded-md text-[11px] font-medium transition flex items-center justify-center gap-1 ${
+              className={`flex-1 py-1 px-1.5 rounded-md text-[11px] font-medium transition flex items-center justify-center gap-1 cursor-pointer ${
                 activeCategory === 'dev'
                   ? 'bg-emerald-950/70 text-emerald-300 border border-emerald-800/40 shadow-sm'
                   : 'text-neutral-400 hover:text-neutral-200'
@@ -150,7 +176,7 @@ export const PortSidebar: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveCategory('system')}
-              className={`flex-1 py-1 px-1.5 rounded-md text-[11px] font-medium transition flex items-center justify-center gap-1 ${
+              className={`flex-1 py-1 px-1.5 rounded-md text-[11px] font-medium transition flex items-center justify-center gap-1 cursor-pointer ${
                 activeCategory === 'system'
                   ? 'bg-amber-950/70 text-amber-300 border border-amber-800/40 shadow-sm'
                   : 'text-neutral-400 hover:text-neutral-200'
@@ -163,7 +189,7 @@ export const PortSidebar: React.FC = () => {
           <div className="flex items-center gap-1 p-0.5 bg-neutral-900/80 rounded-lg border border-neutral-800/60 text-xs">
             <button
               onClick={() => setProcessSortBy('mem')}
-              className={`flex-1 py-1 px-1 rounded-md text-[10px] font-medium transition flex items-center justify-center gap-1 ${
+              className={`flex-1 py-1 px-1 rounded-md text-[10px] font-medium transition flex items-center justify-center gap-1 cursor-pointer ${
                 processSortBy === 'mem'
                   ? 'bg-purple-950/80 text-purple-200 border border-purple-800/50 shadow-sm'
                   : 'text-neutral-400 hover:text-neutral-200'
@@ -174,7 +200,7 @@ export const PortSidebar: React.FC = () => {
             </button>
             <button
               onClick={() => setProcessSortBy('cpu')}
-              className={`flex-1 py-1 px-1 rounded-md text-[10px] font-medium transition flex items-center justify-center gap-1 ${
+              className={`flex-1 py-1 px-1 rounded-md text-[10px] font-medium transition flex items-center justify-center gap-1 cursor-pointer ${
                 processSortBy === 'cpu'
                   ? 'bg-amber-950/80 text-amber-200 border border-amber-800/50 shadow-sm'
                   : 'text-neutral-400 hover:text-neutral-200'
@@ -185,7 +211,7 @@ export const PortSidebar: React.FC = () => {
             </button>
             <button
               onClick={() => setProcessSortBy('pid')}
-              className={`flex-1 py-1 px-1 rounded-md text-[10px] font-medium transition flex items-center justify-center gap-1 ${
+              className={`flex-1 py-1 px-1 rounded-md text-[10px] font-medium transition flex items-center justify-center gap-1 cursor-pointer ${
                 processSortBy === 'pid'
                   ? 'bg-neutral-800 text-neutral-100 shadow-sm'
                   : 'text-neutral-400 hover:text-neutral-200'
@@ -196,7 +222,7 @@ export const PortSidebar: React.FC = () => {
             </button>
             <button
               onClick={() => setProcessSortBy('name')}
-              className={`flex-1 py-1 px-1 rounded-md text-[10px] font-medium transition flex items-center justify-center gap-1 ${
+              className={`flex-1 py-1 px-1 rounded-md text-[10px] font-medium transition flex items-center justify-center gap-1 cursor-pointer ${
                 processSortBy === 'name'
                   ? 'bg-neutral-800 text-neutral-100 shadow-sm'
                   : 'text-neutral-400 hover:text-neutral-200'
@@ -210,7 +236,7 @@ export const PortSidebar: React.FC = () => {
       </div>
 
       {/* Item List Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-2 space-y-1">
+      <div className="flex-1 overflow-y-auto p-2 space-y-1 min-h-0">
         {appMode === 'ports' ? (
           filteredPorts.length === 0 ? (
             <div className="py-12 flex flex-col items-center justify-center text-xs text-neutral-500 gap-2">
@@ -218,7 +244,7 @@ export const PortSidebar: React.FC = () => {
               {q && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition"
+                  className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition cursor-pointer"
                 >
                   清空搜索条件
                 </button>
@@ -230,10 +256,10 @@ export const PortSidebar: React.FC = () => {
               const isDev = devPorts.includes(item.port)
 
               return (
-                <button
+                <div
                   key={`${item.port}-${item.pid}`}
                   onClick={() => selectPort(item)}
-                  className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition border ${
+                  className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition border cursor-pointer group relative ${
                     isSelected
                       ? 'bg-blue-600/15 border-blue-500/60 text-blue-200 shadow-md shadow-blue-950/40'
                       : 'bg-neutral-900/30 border-neutral-800/40 hover:bg-neutral-900/80 hover:border-neutral-700/60 text-neutral-300'
@@ -254,7 +280,7 @@ export const PortSidebar: React.FC = () => {
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-semibold text-xs truncate max-w-[110px] text-neutral-200">
+                        <span className="font-semibold text-xs truncate max-w-[105px] text-neutral-200">
                           {item.processName}
                         </span>
                         {item.isSystem && (
@@ -263,20 +289,32 @@ export const PortSidebar: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] text-neutral-500 font-mono mt-0.5">
+                      <div className="flex items-center gap-1.5 text-[10px] text-neutral-500 font-mono mt-0.5">
                         <span>PID {item.pid}</span>
                         <span>•</span>
-                        <span className="truncate max-w-[70px]">{item.user}</span>
+                        <span className="truncate max-w-[65px]">{item.user}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="text-right">
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-800/60 text-neutral-400 font-mono">
+                  {/* Right side: Protocol vs Hover Quick Actions */}
+                  <div className="text-right flex items-center gap-1">
+                    {/* Hover Quick Kill Action */}
+                    {!item.isSystem && (
+                      <button
+                        onClick={(e) => handleQuickKill(e, item.pid, false)}
+                        title="释放该端口 (SIGTERM)"
+                        className="opacity-0 group-hover:opacity-100 p-1 rounded-md bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800/60 transition cursor-pointer"
+                      >
+                        <PowerOff className="w-3 h-3" />
+                      </button>
+                    )}
+
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-800/60 text-neutral-400 font-mono group-hover:hidden">
                       {item.protocol}
                     </span>
                   </div>
-                </button>
+                </div>
               )
             })
           )
@@ -286,7 +324,7 @@ export const PortSidebar: React.FC = () => {
             {q && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition"
+                className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition cursor-pointer"
               >
                 清空搜索条件
               </button>
@@ -297,10 +335,10 @@ export const PortSidebar: React.FC = () => {
             const isSelected = selectedProcess?.pid === item.pid
 
             return (
-              <button
+              <div
                 key={item.pid}
                 onClick={() => selectProcess(item)}
-                className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition border ${
+                className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition border cursor-pointer group relative ${
                   isSelected
                     ? 'bg-purple-600/15 border-purple-500/60 text-purple-200 shadow-md shadow-purple-950/40'
                     : 'bg-neutral-900/30 border-neutral-800/40 hover:bg-neutral-900/80 hover:border-neutral-700/60 text-neutral-300'
@@ -314,7 +352,7 @@ export const PortSidebar: React.FC = () => {
 
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-xs truncate max-w-[120px] text-neutral-200">
+                      <span className="font-semibold text-xs truncate max-w-[110px] text-neutral-200">
                         {item.command}
                       </span>
                       {item.isSystem && (
@@ -323,25 +361,38 @@ export const PortSidebar: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    <p className="text-[10px] text-neutral-500 font-mono truncate max-w-[130px] mt-0.5">
+                    <p className="text-[10px] text-neutral-500 font-mono truncate max-w-[110px] mt-0.5">
                       {item.cmdline}
                     </p>
                   </div>
                 </div>
 
-                <div className="text-right flex flex-col items-end shrink-0 text-xs font-mono">
-                  {item.memPercent > 0 ? (
-                    <span className="text-[11px] text-purple-300 font-semibold">
-                      {item.memPercent.toFixed(1)}% <span className="text-[9px] text-neutral-500 font-normal">M</span>
-                    </span>
-                  ) : null}
-                  {item.cpuPercent > 0 ? (
-                    <span className="text-[10px] text-amber-400">
-                      {item.cpuPercent.toFixed(1)}% <span className="text-[9px] text-neutral-500 font-normal">C</span>
-                    </span>
-                  ) : null}
+                {/* Right Metrics & Quick Kill */}
+                <div className="text-right flex items-center gap-1 shrink-0 text-xs font-mono">
+                  {!item.isSystem && (
+                    <button
+                      onClick={(e) => handleQuickKill(e, item.pid, false)}
+                      title="终止此进程 (SIGTERM)"
+                      className="opacity-0 group-hover:opacity-100 p-1 rounded-md bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800/60 transition cursor-pointer"
+                    >
+                      <PowerOff className="w-3 h-3" />
+                    </button>
+                  )}
+
+                  <div className="flex flex-col items-end group-hover:hidden">
+                    {item.memPercent > 0 ? (
+                      <span className="text-[11px] text-purple-300 font-semibold">
+                        {item.memPercent.toFixed(1)}% <span className="text-[9px] text-neutral-500 font-normal">M</span>
+                      </span>
+                    ) : null}
+                    {item.cpuPercent > 0 ? (
+                      <span className="text-[10px] text-amber-400">
+                        {item.cpuPercent.toFixed(1)}% <span className="text-[9px] text-neutral-500 font-normal">C</span>
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
-              </button>
+              </div>
             )
           })
         )}

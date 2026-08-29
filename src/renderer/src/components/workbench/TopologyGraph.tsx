@@ -3,7 +3,6 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   Node,
   Edge,
   Position,
@@ -12,6 +11,7 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useAppStore } from '../../stores/useAppStore'
+import { formatBytes } from '../../utils/formatters'
 import { ProcessInfo } from '@shared/types'
 import { Cpu, HardDrive, Activity } from 'lucide-react'
 
@@ -29,11 +29,6 @@ const ProcessNode: React.FC<{ data: CustomNodeData }> = ({ data }) => {
 
   const isRoot = index === 0 && !isChild
   const hasDocker = Boolean(node.Container)
-
-  const formatBytes = (bytes?: number) => {
-    if (!bytes) return null
-    return `${(bytes / (1024 * 1024)).toFixed(1)}MB`
-  }
 
   return (
     <div
@@ -176,7 +171,6 @@ export const TopologyGraph: React.FC = () => {
       const childStartX = targetX + 320
 
       children.forEach((child, cIdx) => {
-        // Vertical layout for children
         const childNodeId = `child-${child.PID}-${cIdx}`
         const childY = (cIdx - (children.length - 1) / 2) * 110 + 150
 
@@ -234,20 +228,10 @@ export const TopologyGraph: React.FC = () => {
         fitViewOptions={{ padding: 0.3 }}
         minZoom={0.2}
         maxZoom={1.5}
+        proOptions={{ hideAttribution: true }}
       >
         <Background color="#27272a" gap={20} size={1} />
         <Controls className="!bg-neutral-900 !border-neutral-800 text-neutral-100" />
-        <MiniMap
-          nodeColor={(n) => {
-            const data = n.data as unknown as CustomNodeData
-            if (data?.isTarget) return '#3b82f6'
-            if (data?.isChild) return '#a855f7'
-            if (data?.index === 0) return '#a855f7'
-            return '#52525b'
-          }}
-          maskColor="rgba(0, 0, 0, 0.7)"
-          className="!bg-neutral-900 !border-neutral-800 !rounded-lg"
-        />
       </ReactFlow>
     </div>
   )

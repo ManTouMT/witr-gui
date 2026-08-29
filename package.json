@@ -4,6 +4,9 @@
   "type": "module",
   "description": "Visual Causal Process & Port Inspector powered by witr",
   "main": "./out/main/index.js",
+  "bin": {
+    "witr-gui": "./bin/witr-gui.js"
+  },
   "author": "witr-gui team",
   "homepage": "https://github.com/pranshuparmar/witr",
   "scripts": {
@@ -12,6 +15,7 @@
     "typecheck": "pnpm run typecheck:node && pnpm run typecheck:web",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
+    "web": "pnpm run build && node ./bin/witr-gui.js",
     "build": "pnpm run typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "pnpm run build && electron-builder --dir",

@@ -1,8 +1,15 @@
 import { execFile } from 'child_process'
 import { promisify } from 'util'
-import { shell } from 'electron'
 import { ActionResult, KillRequest, OpenDirectoryRequest } from '../../shared/types'
 import { isProtectedProcess } from './safeguards'
+
+let electronShell: any = null
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  electronShell = require('electron')?.shell
+} catch {
+  // Running in pure Node.js CLI mode
+}
 
 const execFileAsync = promisify(execFile)
 
@@ -80,9 +87,13 @@ export class ActionResolver {
 
     try {
       if (app === 'finder') {
-        const opened = await shell.openPath(targetPath)
-        if (opened) {
-          return { success: false, message: opened, error: opened }
+        if (electronShell && electronShell.openPath) {
+          const opened = await electronShell.openPath(targetPath)
+          if (opened) {
+            return { success: false, message: opened, error: opened }
+          }
+        } else {
+          await execFileAsync('open', [targetPath])
         }
         return { success: true, message: `已在 Finder 中打开: ${targetPath}` }
       }
@@ -102,7 +113,11 @@ export class ActionResolver {
         return { success: true, message: `已在终端中打开: ${targetPath}` }
       }
 
-      await shell.openPath(targetPath)
+      if (electronShell && electronShell.openPath) {
+        await electronShell.openPath(targetPath)
+      } else {
+        await execFileAsync('open', [targetPath])
+      }
       return { success: true, message: `已打开: ${targetPath}` }
     } catch (error: any) {
       console.error(`[ActionResolver] Failed to open path ${targetPath} with ${app}:`, error)

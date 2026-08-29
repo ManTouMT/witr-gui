@@ -91,7 +91,19 @@ Say goodbye to cryptic `lsof -i :3000`, `netstat`, and blind `kill -9` commands.
 
 ---
 
-## 📥 Direct Download & Installation (End Users)
+## ⚡ Instant Usage: Zero-Install in 1 Second via NPX (Recommended)
+
+Don't want to download a desktop installer? If you have Node.js installed, simply run:
+
+```bash
+npx witr-gui
+```
+
+> 💡 **Zero Install & Zero Disk Footprint**: Instantly opens your default browser at `http://localhost:4999` with the exact same **React Flow vector topology** and **bidirectional causal inspector**. Terminate anytime with `Ctrl + C`!
+
+---
+
+## 📥 Desktop App Direct Download (For Resident MenuBar Users)
 
 > 💡 **No compilation required**. Download pre-compiled, fully self-contained packages:
 

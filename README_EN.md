@@ -92,7 +92,7 @@ Say goodbye to cryptic `lsof -i :3000`, `netstat`, and blind `kill -9` commands.
 ### 4. 🔍 Smart Workspace & Framework Detection
 
 * Automatically inspects working directories for `package.json`, `go.mod`, `Cargo.toml`, `pyproject.toml`, `.git`, etc.
-* **Code Projects**: Displays framework tags (`⚡ Next.js`, `🟢 Vite`, `🦀 Rust`) and lights up **`[<> VS Code]`** and **`[>_ Cursor]`** shortcuts.
+* **Code Projects**: Displays framework tags (`⚡ Next.js`, `🟢 Vite`, `🦀 Rust`) and lights up **`[<> VS Code]`** shortcut.
 * **App Sandboxes (e.g. QQ, WeChat)**: Automatically switches to **`[📁 Finder Sandbox]`**, preventing confusion.
 
 ---

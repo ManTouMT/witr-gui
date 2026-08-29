@@ -8,9 +8,13 @@ import { join } from 'path'
 import * as fs from 'fs'
 
 // Prevent multiple instances
-const gotTheLock = app.requestSingleInstanceLock()
-if (!gotTheLock) {
-  app.quit()
+if (process.env.CAPTURE_SCREENSHOTS === '1') {
+  app.setPath('userData', join(app.getPath('temp'), 'witr-gui-capture-' + Date.now()))
+} else {
+  const gotTheLock = app.requestSingleInstanceLock()
+  if (!gotTheLock) {
+    app.quit()
+  }
 }
 
 app.whenReady().then(async () => {
@@ -45,17 +49,29 @@ app.whenReady().then(async () => {
     mainWin.setSize(1280, 800)
     await new Promise((r) => setTimeout(r, 3000))
 
-    // 1. Capture Workbench Ports Mode
+    // 1. Capture Workbench Ports Mode (select first active port)
+    await mainWin.webContents.executeJavaScript(`
+      (() => {
+        const portCards = document.querySelectorAll('div.cursor-pointer');
+        if (portCards.length > 0) portCards[0].click();
+      })()
+    `)
+    await new Promise((r) => setTimeout(r, 2000))
     const img1 = await mainWin.webContents.capturePage()
     fs.writeFileSync(join(docsImagesDir, 'screenshot-workbench.png'), img1.toPNG())
     console.log('✓ Captured docs/images/screenshot-workbench.png')
 
-    // 2. Switch to Processes Mode & Search QQ
+    // 2. Switch to Processes Mode & Filter QQ
     await mainWin.webContents.executeJavaScript(`
       (() => {
         const btns = Array.from(document.querySelectorAll('button'));
         const btn = btns.find(b => b.textContent && b.textContent.includes('系统进程'));
         if (btn) btn.click();
+        const input = document.querySelector('input');
+        if (input) {
+          input.value = 'qq';
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
       })()
     `)
     await new Promise((r) => setTimeout(r, 2500))

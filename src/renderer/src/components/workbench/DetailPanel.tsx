@@ -8,7 +8,6 @@ import { DetailRawJsonTab } from './detail/DetailRawJsonTab'
 import {
   Code,
   FolderOpen,
-  Terminal,
   PowerOff,
   Info,
   Network,
@@ -106,24 +105,14 @@ export const DetailPanel: React.FC = () => {
           {workingDir && workingDir !== 'unknown' && (
             <div className="flex items-center gap-1 mr-2 border-r border-neutral-800 pr-2">
               {isProjectDir ? (
-                <>
-                  <button
-                    onClick={() => openPath(workingDir, 'vscode')}
-                    className="px-2.5 py-1 rounded-md bg-blue-950/70 hover:bg-blue-900/80 text-blue-300 text-xs font-medium border border-blue-800/50 flex items-center gap-1 transition cursor-pointer"
-                    title="在 VS Code 中打开项目根目录"
-                  >
-                    <Code className="w-3 h-3" />
-                    <span>VS Code</span>
-                  </button>
-                  <button
-                    onClick={() => openPath(workingDir, 'cursor')}
-                    className="px-2.5 py-1 rounded-md bg-purple-950/70 hover:bg-purple-900/80 text-purple-300 text-xs font-medium border border-purple-800/50 flex items-center gap-1 transition cursor-pointer"
-                    title="在 Cursor 中打开项目根目录"
-                  >
-                    <Terminal className="w-3 h-3" />
-                    <span>Cursor</span>
-                  </button>
-                </>
+                <button
+                  onClick={() => openPath(workingDir, 'vscode')}
+                  className="px-2.5 py-1 rounded-md bg-blue-950/70 hover:bg-blue-900/80 text-blue-300 text-xs font-medium border border-blue-800/50 flex items-center gap-1 transition cursor-pointer"
+                  title="在 VS Code 中打开项目根目录"
+                >
+                  <Code className="w-3 h-3" />
+                  <span>VS Code</span>
+                </button>
               ) : null}
               <button
                 onClick={() => openPath(workingDir, 'finder')}

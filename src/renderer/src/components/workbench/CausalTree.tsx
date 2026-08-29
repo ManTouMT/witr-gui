@@ -300,12 +300,6 @@ export const CausalTree: React.FC = () => {
                         VS Code
                       </button>
                       <button
-                        onClick={() => openPath(targetProcess.WorkingDir!, 'cursor')}
-                        className="px-2 py-0.5 rounded bg-purple-950/70 hover:bg-purple-900 text-purple-300 text-[10px] font-medium border border-purple-800/50 transition cursor-pointer"
-                      >
-                        Cursor
-                      </button>
-                      <button
                         onClick={() => openPath(targetProcess.WorkingDir!, 'finder')}
                         className="px-2 py-0.5 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[10px] font-medium transition cursor-pointer"
                       >

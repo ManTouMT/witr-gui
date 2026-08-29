@@ -98,7 +98,7 @@
 
 * **智能工程探测器（Smart Workspace Detector）**：
   - 自动嗅探工作目录中的 `package.json`、`go.mod`、`Cargo.toml`、`pyproject.toml`、`pom.xml` 或 `.git`。
-  - **代码工程**：自动打上技术栈标签（`⚡ Next.js`、`🟢 Vite`、`🦀 Rust` 等），并点亮 **`[<> VS Code]`** 与 **`[>_ Cursor]`** 源码直达按钮；
+  - **代码工程**：自动打上技术栈标签（`⚡ Next.js`、`🟢 Vite`、`🦀 Rust` 等），并点亮 **`[<> VS Code]`** 源码直达按钮；
   - **桌面应用/系统沙盒（如 QQ、WeChat）**：自动隐藏代码按钮，转换为 **`[📁 访达定位沙盒]`**，符合用户直觉。
 
 ---

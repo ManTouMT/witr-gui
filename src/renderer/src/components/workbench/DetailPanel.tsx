@@ -35,6 +35,8 @@ export const DetailPanel: React.FC = () => {
   const isProtected = selectedPort?.isSystem
   const workingDir = processInfo?.WorkingDir || ''
 
+  const isProjectDir = workingDir && workingDir !== 'unknown' && workingDir !== '/' && workingDir !== '/Applications'
+
   const handleKill = async (force: boolean) => {
     setKilling(true)
     await killCurrentProcess(force)
@@ -107,22 +109,26 @@ export const DetailPanel: React.FC = () => {
         <div className="flex items-center gap-2">
           {workingDir && workingDir !== 'unknown' && (
             <div className="flex items-center gap-1 mr-2 border-r border-neutral-800 pr-2">
-              <button
-                onClick={() => openPath(workingDir, 'vscode')}
-                className="px-2.5 py-1 rounded-md bg-blue-950/70 hover:bg-blue-900/80 text-blue-300 text-xs font-medium border border-blue-800/50 flex items-center gap-1 transition"
-                title="在 VS Code 中打开项目根目录"
-              >
-                <Code className="w-3 h-3" />
-                <span>VS Code</span>
-              </button>
-              <button
-                onClick={() => openPath(workingDir, 'cursor')}
-                className="px-2.5 py-1 rounded-md bg-purple-950/70 hover:bg-purple-900/80 text-purple-300 text-xs font-medium border border-purple-800/50 flex items-center gap-1 transition"
-                title="在 Cursor 中打开项目根目录"
-              >
-                <Terminal className="w-3 h-3" />
-                <span>Cursor</span>
-              </button>
+              {isProjectDir && (
+                <>
+                  <button
+                    onClick={() => openPath(workingDir, 'vscode')}
+                    className="px-2.5 py-1 rounded-md bg-blue-950/70 hover:bg-blue-900/80 text-blue-300 text-xs font-medium border border-blue-800/50 flex items-center gap-1 transition"
+                    title="在 VS Code 中打开项目根目录"
+                  >
+                    <Code className="w-3 h-3" />
+                    <span>VS Code</span>
+                  </button>
+                  <button
+                    onClick={() => openPath(workingDir, 'cursor')}
+                    className="px-2.5 py-1 rounded-md bg-purple-950/70 hover:bg-purple-900/80 text-purple-300 text-xs font-medium border border-purple-800/50 flex items-center gap-1 transition"
+                    title="在 Cursor 中打开项目根目录"
+                  >
+                    <Terminal className="w-3 h-3" />
+                    <span>Cursor</span>
+                  </button>
+                </>
+              )}
               <button
                 onClick={() => openPath(workingDir, 'finder')}
                 className="px-2.5 py-1 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-medium flex items-center gap-1 transition"
@@ -214,9 +220,14 @@ export const DetailPanel: React.FC = () => {
                   <span className="text-neutral-500">来源类型:</span>
                   <span className="text-purple-300 font-semibold">{witrResult?.Source?.Type || 'direct process'}</span>
                 </div>
-                <div className="flex justify-between truncate">
-                  <span className="text-neutral-500">服务名:</span>
-                  <span className="text-neutral-200 truncate max-w-[150px]">{witrResult?.Source?.Name || 'N/A'}</span>
+                <div className="flex justify-between items-center group">
+                  <span className="text-neutral-500 shrink-0">服务名:</span>
+                  <span
+                    className="text-neutral-200 truncate max-w-[170px] select-text font-mono text-[10px]"
+                    title={witrResult?.Source?.Name || 'N/A'}
+                  >
+                    {witrResult?.Source?.Name || 'N/A'}
+                  </span>
                 </div>
                 {processInfo?.Container && (
                   <div className="flex justify-between">
@@ -240,7 +251,7 @@ export const DetailPanel: React.FC = () => {
                 </div>
                 <div className="truncate">
                   <span className="text-neutral-500 block mb-0.5">工作目录:</span>
-                  <span className="text-neutral-300 truncate block select-text" title={workingDir}>
+                  <span className="text-neutral-300 truncate block select-text font-mono text-[10px]" title={workingDir}>
                     {workingDir || 'unknown'}
                   </span>
                 </div>

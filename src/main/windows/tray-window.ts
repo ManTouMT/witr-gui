@@ -56,16 +56,18 @@ export class TrayWindowManager {
 
     const trayBounds = tray.getBounds()
     const windowBounds = this.window.getBounds()
-    const primaryDisplay = screen.getPrimaryDisplay()
-    const { width: screenWidth } = primaryDisplay.workAreaSize
+    const display = screen.getDisplayNearestPoint({ x: trayBounds.x, y: trayBounds.y })
+    const { x: displayX, width: displayWidth } = display.workArea
 
-    // Center horizontally below tray icon
+    // Center horizontally below tray icon relative to current display workArea
     let x = Math.round(trayBounds.x + trayBounds.width / 2 - windowBounds.width / 2)
-    // Constrain within screen width
-    if (x + windowBounds.width > screenWidth - 10) {
-      x = screenWidth - windowBounds.width - 10
+    // Constrain within current display bounds
+    if (x + windowBounds.width > displayX + displayWidth - 10) {
+      x = displayX + displayWidth - windowBounds.width - 10
     }
-    if (x < 10) x = 10
+    if (x < displayX + 10) {
+      x = displayX + 10
+    }
 
     const y = Math.round(trayBounds.y + trayBounds.height + 4)
 

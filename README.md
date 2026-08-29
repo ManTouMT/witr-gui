@@ -1,7 +1,7 @@
 # Witr GUI 🖥️⚡
 
 <p align="center">
-  <img src="docs/images/hero-banner.svg" alt="Witr GUI Banner" width="100%">
+  <img src="docs/images/screenshot-workbench.png" alt="Witr GUI Visual Workbench" width="100%">
 </p>
 
 <p align="center">
@@ -24,11 +24,11 @@
 
 ---
 
-`witr-gui` is a modern desktop troubleshooting workbench for macOS and POSIX systems. It transforms cryptic PID lookups and `lsof` commands into an intuitive, visual experience with instant **causal ancestry tracing**, **sub-process hierarchy exploration**, and **safe process resolution**.
+`witr-gui` is a modern desktop efficiency application for macOS and POSIX systems. It transforms cryptic PID lookups and `lsof` commands into an intuitive, visual experience with instant **causal ancestry tracing**, **sub-process hierarchy exploration**, and **safe process resolution**.
 
 ---
 
-## 📥 Direct Download & Installation
+## 📥 Direct Download & Installation (End Users)
 
 You **do not need** to build the application from source. Pre-compiled, fully self-contained packages are ready to download:
 
@@ -46,12 +46,12 @@ You **do not need** to build the application from source. Pre-compiled, fully se
 
 ---
 
-## ✨ Key Features & Real-World Scenarios
+## ✨ Features & Real UI Screenshots
 
 ### 1. ⚡ Dual-Mode UX Architecture
 
 <p align="center">
-  <img src="docs/images/feature-dual-mode.svg" alt="Dual-Mode UX" width="100%">
+  <img src="docs/images/screenshot-tray.png" alt="MenuBar Popover Tray View" width="45%">
 </p>
 
 * **MenuBar Popover (`Alt+W`)**:
@@ -61,36 +61,34 @@ You **do not need** to build the application from source. Pre-compiled, fully se
 
 ---
 
-### 2. 🌲 Bidirectional Causal Family Tree
+### 2. 🌲 Full System Processes & Bidirectional Family Tree
 
 <p align="center">
-  <img src="docs/images/feature-family-tree.svg" alt="Bidirectional Family Tree" width="100%">
+  <img src="docs/images/screenshot-processes.png" alt="Full Processes Mode & Family Tree" width="100%">
 </p>
 
+* **⚡ All System Processes Exploration**:
+  - Real-time 4-way sorting by **Memory (Mem%)**, **CPU%**, **PID**, and **Process Name**. Instant search across all apps (e.g. searching `qq` immediately exposes all 14+ helper and renderer subprocesses).
 * **⬆️ Ancestry Upward Tracing (Who started this?)**:
   - Answers *"Why is this process running?"* by tracing parent execution lineages: `launchd (PID 1) → IDE / Terminal → Target Process`.
 * **⬇️ Subprocesses Downward Branching (What did it spawn?)**:
-  - Automatically unfolds all child worker, renderer, and helper subprocesses (e.g. Chrome / QQ / Electron multiple helper processes) with per-process CPU%, memory metrics, and CLI arguments.
+  - Automatically unfolds all child worker, renderer, and helper subprocesses with per-process CPU%, memory metrics, and CLI arguments.
 
 ---
 
 ### 3. 🕸️ Interactive React Flow Topology Graph
 
 <p align="center">
-  <img src="docs/images/feature-topology.svg" alt="React Flow Topology" width="100%">
+  <img src="docs/images/screenshot-topology.png" alt="React Flow Topology Canvas" width="100%">
 </p>
 
 * **Interactive Visual Network**:
   - Pan, zoom, and inspect process hierarchies and multi-container topologies on a high-performance vector canvas powered by `@xyflow/react`.
-* *Scenario*: Visualizing complex microservices clusters, Vite compiler daemon workers, or multi-process Electron applications.
+* *Scenario*: Visualizing complex microservices clusters, compiler daemon workers, or multi-process Electron applications.
 
 ---
 
 ### 4. 🛡️ Intelligent Safeguards & 1-Click IDE Jump
-
-<p align="center">
-  <img src="docs/images/feature-actions.svg" alt="Safeguards & IDE Jump" width="100%">
-</p>
 
 * **System Whitelist Protection**:
   - Prevents accidental termination of macOS core system daemons (`launchd`, `WindowServer`, `kernel_task`, etc.).

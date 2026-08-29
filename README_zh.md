@@ -1,7 +1,7 @@
 # Witr GUI 🖥️⚡
 
 <p align="center">
-  <img src="docs/images/hero-banner.svg" alt="Witr GUI Banner" width="100%">
+  <img src="docs/images/screenshot-workbench.png" alt="Witr GUI Visual Workbench" width="100%">
 </p>
 
 <p align="center">
@@ -46,12 +46,12 @@
 
 ---
 
-## ✨ 核心特性与典型应用场景
+## ✨ 核心特性与真实界面展示
 
 ### 1. ⚡ 动静结合的双模架构 (Dual-Mode UX)
 
 <p align="center">
-  <img src="docs/images/feature-dual-mode.svg" alt="双模形态对比" width="100%">
+  <img src="docs/images/screenshot-tray.png" alt="菜单栏极速气泡真实截图" width="45%">
 </p>
 
 * **菜单栏极速气泡 (`Alt + W`)**：
@@ -61,12 +61,14 @@
 
 ---
 
-### 2. 🌲 双向完整血缘家族树 (Full Process Family Tree)
+### 2. 🌲 全量系统进程与双向血缘家族树 (Full Process Family Tree)
 
 <p align="center">
-  <img src="docs/images/feature-family-tree.svg" alt="双向家族树" width="100%">
+  <img src="docs/images/screenshot-processes.png" alt="全量系统进程与双向家族树真实截图" width="100%">
 </p>
 
+* **⚡ 全量系统进程嗅探与四维排序**：
+  - 支持按 **内存占用 (Mem%)**、**CPU%**、**PID**、**名称** 实时排序；搜索 `qq` 即可与官方 CLI 完全对标搜出全部 14+ 个主辅渲染进程。
 * **⬆️ 向上溯源祖先（Ancestors）：回答“谁启动了它？”**
   - 自动向上追溯进程树：`launchd (PID 1) → IDE / 终端窗口 → 目标服务`，精准识别是哪个项目、哪个任务触发了该进程。
 * **⬇️ 向下展开子孙（Subprocesses）：回答“它孵化了什么？”**
@@ -77,7 +79,7 @@
 ### 3. 🕸️ 交互式 React Flow 进程拓扑网络
 
 <p align="center">
-  <img src="docs/images/feature-topology.svg" alt="交互拓扑图" width="100%">
+  <img src="docs/images/screenshot-topology.png" alt="交互式拓扑画布真实截图" width="100%">
 </p>
 
 * **基于 `@xyflow/react` 的高帧率拓扑画布**：
@@ -87,10 +89,6 @@
 ---
 
 ### 4. 🛡️ 智能防误杀保护与 1 键 IDE 源码直达
-
-<p align="center">
-  <img src="docs/images/feature-actions.svg" alt="智能防误杀与IDE直达" width="100%">
-</p>
 
 * **系统关键守护进程白名单**：
   - 对 macOS 核心守护进程（`launchd`、`WindowServer`、`kernel_task` 等）自动上锁保护，杜绝误杀导致系统注销或崩溃。
